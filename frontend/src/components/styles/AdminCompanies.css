@@ -1,0 +1,175 @@
+:root {
+  --bg: #f7f8fb;
+  --text: #111827;
+  --muted: #6b7280;
+
+  --surface: #ffffff;
+  --surface-2: #fafafa;
+
+  --primary: #2563eb;
+  --primary-600: #1d4ed8;
+
+  --warn: #f59e0b;
+  --warn-600: #d97706;
+
+  --danger: #ef4444;
+  --danger-600: #dc2626;
+
+  --border: #e5e7eb;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.06);
+}
+
+/* Page */
+.admin-page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.admin-header h3 {
+  margin: 0 0 var(--space-2);
+  font-size: 24px;
+  line-height: 1.25;
+}
+
+.muted {
+  color: var(--muted);
+  margin: 0;
+}
+
+/* Card surface */
+.surface {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-5);
+}
+
+/* List */
+.company-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.company-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--space-4);
+  align-items: center;
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+
+.company-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.company-name {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.company-meta {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* Buttons */
+.btn {
+  font: inherit;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn + .btn {
+  margin-left: var(--space-2);
+}
+
+.btn.primary {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+.btn.primary:hover {
+  background: var(--primary-600);
+}
+
+.btn.warn {
+  background: var(--warn);
+  color: #fff;
+  border-color: var(--warn);
+}
+.btn.warn:hover {
+  background: var(--warn-600);
+}
+
+.btn.danger {
+  background: var(--danger);
+  color: #fff;
+  border-color: var(--danger);
+}
+.btn.danger:hover {
+  background: var(--danger-600);
+}
+
+/* Footer */
+.page-footer {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+}
+
+.footer-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-5);
+}
+
+.footer-left {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  color: var(--muted);
+}
+
+.footer-right {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.footer-right a {
+  color: var(--text);
+  opacity: 0.85;
+  text-decoration: none;
+}
+.footer-right a:hover {
+  opacity: 1;
+  text-decoration: underline;
+}

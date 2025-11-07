@@ -33,7 +33,7 @@ app.use(cors({
     }
     return callback(null, true);
   },
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"], // <-- PATCH added
   credentials: true
 }));
 
@@ -58,10 +58,9 @@ app.get("/test-firebase", async (req, res) => {
   }
 });
 
-
 // ------------------- Root -------------------
 app.get("/", (req, res) => {
-  res.send("✅ Server is  running!");
+  res.send("✅ Server is running!");
 });
 
 // ------------------- Start server -------------------

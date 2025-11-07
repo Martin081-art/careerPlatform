@@ -9,7 +9,9 @@ import {
   viewOpportunities,
   applyJob,
   getJobNotifications,
-  getCourses
+  getCourses,
+  getStudentProfile,         // <-- new
+  updateStudentProfile 
 } from "../controllers/studentController.js";
 
 const router = express.Router();
@@ -35,5 +37,9 @@ router.get("/:studentId/job-notifications", getJobNotifications);
 
 // Fetch courses
 router.get("/courses", getCourses);
+
+// Profile
+router.get("/:studentId/profile", getStudentProfile);
+router.patch("/:studentId/profile", updateStudentProfile);
 
 export default router;

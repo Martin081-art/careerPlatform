@@ -213,3 +213,47 @@ export const getCourses = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+// -------------------- Get Student Profile --------------------
+export const getStudentProfile = async (req, res) => {
+  try {
+    const { studentId } = req.params;
+
+    const studentDoc = await dbAdmin.collection("students").doc(studentId).get();
+    if (!studentDoc.exists) {
+      return res.status(404).json({ success: false, message: "Student not found" });
+    }
+
+    res.json({ success: true, student: { id: studentDoc.id, ...studentDoc.data() } });
+  } catch (error) {
+    console.error("Get student profile error:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// -------------------- Update Student Profile --------------------
+export const updateStudentProfile = async (req, res) => {
+  try {
+    const { studentId } = req.params;
+    const { name, phone, qualification } = req.body;
+
+    const studentRef = dbAdmin.collection("students").doc(studentId);
+    const studentDoc = await studentRef.get();
+    if (!studentDoc.exists) {
+      return res.status(404).json({ success: false, message: "Student not found" });
+    }
+
+    await studentRef.update({
+      name,
+      phone,
+      qualification,
+      updatedAt: new Date().toISOString(),
+    });
+
+    res.json({ success: true, message: "Profile updated successfully" });
+  } catch (error) {
+    console.error("Update student profile error:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+

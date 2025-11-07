@@ -29,6 +29,15 @@ app.use("/institute", instituteRoutes);
 app.use("/companies", companyRoutes);
 
 // ------------------- Root -------------------
+app.get("/test-firebase", async (req, res) => {
+  try {
+    const users = await adminAuth.listUsers(10);
+    res.json({ users });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 
 app.get("/", (req, res) => {
   res.send("✅ Server is alive and running!");

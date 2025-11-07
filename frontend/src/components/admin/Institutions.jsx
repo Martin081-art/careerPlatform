@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
-import "../../components/styles/AdminInstitutions.css"; // add modern styles
+import "../../components/styles/AdminInstitutions.css";
 
 export default function Institutions() {
   const [institutions, setInstitutions] = useState([]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
+  const [editingId, setEditingId] = useState(null); // store ID of institution being edited
+  const [editData, setEditData] = useState({ name: "", email: "", address: "" });
 
   const fetchInstitutions = async () => {
     try {
@@ -27,9 +29,7 @@ export default function Institutions() {
       const data = await res.json();
       if (data.success) {
         fetchInstitutions();
-        setName("");
-        setEmail("");
-        setAddress("");
+        setName(""); setEmail(""); setAddress("");
       } else {
         alert(data.message);
       }
@@ -50,6 +50,35 @@ export default function Institutions() {
     }
   };
 
+  const startEditing = (inst) => {
+    setEditingId(inst.id);
+    setEditData({ name: inst.name, email: inst.email, address: inst.address });
+  };
+
+  const cancelEditing = () => {
+    setEditingId(null);
+    setEditData({ name: "", email: "", address: "" });
+  };
+
+  const updateInstitution = async () => {
+    try {
+      const res = await fetch(`https://careerplatform-z4jj.onrender.com/admin/institutes/${editingId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(editData),
+      });
+      const data = await res.json();
+      if (data.success) {
+        fetchInstitutions();
+        cancelEditing();
+      } else {
+        alert(data.message);
+      }
+    } catch (err) {
+      console.error("Error updating institution:", err);
+    }
+  };
+
   useEffect(() => {
     fetchInstitutions();
   }, []);
@@ -58,7 +87,7 @@ export default function Institutions() {
     <div className="admin-page">
       <header className="admin-header">
         <h3>Manage Institutions</h3>
-        <p className="muted">Create, view, and remove registered institutions.</p>
+        <p className="muted">Create, view, edit, and remove registered institutions.</p>
       </header>
 
       <section className="surface">
@@ -94,29 +123,43 @@ export default function Institutions() {
         <ul className="institutions-list">
           {institutions.map((inst) => (
             <li key={inst.id} className="institution-item">
-              <div className="institution-info">
-                <strong className="inst-name">{inst.name}</strong>
-                <span className="inst-meta">{inst.email} — {inst.address}</span>
-              </div>
-              <button className="btn danger" onClick={() => deleteInstitution(inst.id)}>Delete</button>
+              {editingId === inst.id ? (
+                <div className="edit-form">
+                  <input
+                    className="input"
+                    type="text"
+                    value={editData.name}
+                    onChange={(e) => setEditData({ ...editData, name: e.target.value })}
+                  />
+                  <input
+                    className="input"
+                    type="email"
+                    value={editData.email}
+                    onChange={(e) => setEditData({ ...editData, email: e.target.value })}
+                  />
+                  <input
+                    className="input"
+                    type="text"
+                    value={editData.address}
+                    onChange={(e) => setEditData({ ...editData, address: e.target.value })}
+                  />
+                  <button className="btn primary" onClick={updateInstitution}>Save</button>
+                  <button className="btn muted" onClick={cancelEditing}>Cancel</button>
+                </div>
+              ) : (
+                <div className="institution-info">
+                  <strong className="inst-name">{inst.name}</strong>
+                  <span className="inst-meta">{inst.email} — {inst.address}</span>
+                  <div className="item-actions">
+                    <button className="btn secondary" onClick={() => startEditing(inst)}>Edit</button>
+                    <button className="btn danger" onClick={() => deleteInstitution(inst.id)}>Delete</button>
+                  </div>
+                </div>
+              )}
             </li>
           ))}
         </ul>
       </section>
-
-      <footer className="page-footer">
-        <div className="footer-content">
-          <div className="footer-left">
-            <strong>Career Guidance Admin</strong>
-            <span>© {new Date().getFullYear()}</span>
-          </div>
-          <nav className="footer-right" aria-label="Footer">
-            <a href="/about">About</a>
-            <a href="/contact">Contact</a>
-            <a href="/privacy">Privacy</a>
-          </nav>
-        </div>
-      </footer>
     </div>
   );
 }

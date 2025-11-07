@@ -1,12 +1,10 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import "../../components/styles/AuthForms.css";
 
-const CompanyRegister = ({ setUser }) => {
+const CompanyRegister = () => {
   const [formData, setFormData] = useState({ name: "", email: "", password: "" });
   const [verificationLink, setVerificationLink] = useState("");
   const [message, setMessage] = useState("");
-  const navigate = useNavigate();
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -14,11 +12,14 @@ const CompanyRegister = ({ setUser }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("https://careerplatform-z4jj.onrender.com/companies/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      const res = await fetch(
+        "https://careerplatform-z4jj.onrender.com/companies/register",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        }
+      );
 
       const data = await res.json();
       if (data.success) {
@@ -26,15 +27,7 @@ const CompanyRegister = ({ setUser }) => {
         setMessage(data.message);
         setVerificationLink(data.verificationLink);
 
-        // Set user state immediately (so dashboard can use it)
-        setUser({
-          role: "company",
-          name: formData.name,
-          id: data.companyId, // returned from backend
-        });
-
-        // Optional: navigate to dashboard after registration
-        navigate("/dashboard/company");
+        // DO NOT set user or navigate until email is verified
       } else {
         setMessage(data.message);
       }
@@ -77,6 +70,7 @@ const CompanyRegister = ({ setUser }) => {
 
         {verificationLink && (
           <div className="verify-section">
+            <p>✅ Please verify your email before logging in.</p>
             <p>Click below to verify your email:</p>
             <a
               href={verificationLink}

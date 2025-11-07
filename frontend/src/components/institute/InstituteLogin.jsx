@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "../../components/styles/AuthForms.css";
 
 const InstituteLogin = ({ setUser }) => {
@@ -48,6 +48,11 @@ const InstituteLogin = ({ setUser }) => {
           onChange={handleChange}
         />
         <button type="submit">Login</button>
+
+        {/* Link to Register page */}
+        <p style={{ marginTop: "10px", textAlign: "center" }}>
+          Don't have an account? <Link to="/institute/register">Register</Link>
+        </p>
       </form>
     </div>
   );

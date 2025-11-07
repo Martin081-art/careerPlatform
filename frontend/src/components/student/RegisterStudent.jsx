@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom"; // ✅ Added Link
+import { Link } from "react-router-dom"; // ✅ Only Link needed now
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import "../../components/styles/AuthForms.css";
 
@@ -11,7 +11,7 @@ const RegisterStudent = () => {
     academicRecords: "",
   });
   const [verificationLink, setVerificationLink] = useState(""); 
-  const navigate = useNavigate();
+  const [message, setMessage] = useState("");
   const auth = getAuth();
 
   const handleChange = (e) =>
@@ -26,6 +26,7 @@ const RegisterStudent = () => {
     }
 
     try {
+      // Create Firebase Auth user
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         formData.email,
@@ -33,6 +34,7 @@ const RegisterStudent = () => {
       );
       const user = userCredential.user;
 
+      // Register student in backend
       const res = await fetch("https://careerplatform-z4jj.onrender.com/students/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -48,12 +50,13 @@ const RegisterStudent = () => {
 
       if (data.success) {
         setVerificationLink(data.emailVerificationLink);
+        setMessage("Student registered successfully! ✅ Please verify your email before logging in.");
       } else {
-        alert(data.message);
+        setMessage(data.message);
       }
     } catch (error) {
       console.error("Register error:", error);
-      alert(error.message);
+      setMessage(error.message);
     }
   };
 
@@ -65,21 +68,47 @@ const RegisterStudent = () => {
   return (
     <div className="auth-container">
       <form className="auth-form" onSubmit={handleSubmit}>
-        <h2>Student Register</h2>
-        <input type="text" name="name" placeholder="Full Name" required onChange={handleChange} />
-        <input type="email" name="email" placeholder="Email" required onChange={handleChange} />
-        <input type="password" name="password" placeholder="Password" required onChange={handleChange} />
-        <input type="text" name="academicRecords" placeholder="Academic Records" required onChange={handleChange} />
+        <h2>Student Registration</h2>
+
+        <input
+          type="text"
+          name="name"
+          placeholder="Full Name"
+          required
+          onChange={handleChange}
+        />
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          required
+          onChange={handleChange}
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          required
+          onChange={handleChange}
+        />
+        <input
+          type="text"
+          name="academicRecords"
+          placeholder="Academic Records"
+          required
+          onChange={handleChange}
+        />
+
         <button type="submit">Register</button>
 
-        {/* ✅ Already have an account link */}
         <p style={{ marginTop: "10px", textAlign: "center" }}>
           Already have an account? <Link to="/student/login">Login</Link>
         </p>
       </form>
 
       {verificationLink && (
-        <div className="verification-link-container">
+        <div className="verification-link-container" style={{ marginTop: "20px" }}>
+          <p>{message}</p>
           <p>Email Verification Link:</p>
           <input
             type="text"

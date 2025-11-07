@@ -6,7 +6,7 @@ export default function Reports() {
   useEffect(() => {
     const fetchReports = async () => {
       try {
-        const res = await fetch("https://careerplatform-o67g.onrender.com/admin/reports");
+        const res = await fetch("https://careerplatform-xu14.onrender.com/admin/reports");
         const data = await res.json();
         if (data.success) setReports(data.reports);
       } catch (err) {

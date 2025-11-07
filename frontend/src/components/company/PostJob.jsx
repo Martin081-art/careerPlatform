@@ -45,7 +45,7 @@ const PostJob = ({ companyId }) => {
     console.log("Posting job with data:", jobData);
 
     try {
-      const res = await fetch("https://careerplatform-o67g.onrender.com/companies/opportunities", {
+      const res = await fetch("https://careerplatform-xu14.onrender.com/companies/opportunities", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(jobData),

@@ -14,7 +14,7 @@ const Faculties = () => {
   // Fetch faculties from backend
   const fetchFaculties = async () => {
     try {
-      const res = await fetch(`https://careerplatform-o67g.onrender.com/institute/${instituteId}/faculties`);
+      const res = await fetch(`https://careerplatform-xu14.onrender.com/institute/${instituteId}/faculties`);
       const data = await res.json();
       if (data.success) setFaculties(data.faculties);
     } catch (err) {
@@ -30,7 +30,7 @@ const Faculties = () => {
   const addFaculty = async () => {
     if (!newFaculty) return alert("Enter faculty name");
     try {
-      const res = await fetch(`https://careerplatform-o67g.onrender.com/institute/${instituteId}/faculties`, {
+      const res = await fetch(`https://careerplatform-xu14.onrender.com/institute/${instituteId}/faculties`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: newFaculty }),
@@ -48,7 +48,7 @@ const Faculties = () => {
   // Delete faculty
   const deleteFaculty = async (facultyId) => {
     try {
-      const res = await fetch(`https://careerplatform-o67g.onrender.com/institute/${instituteId}/faculties/${facultyId}`, {
+      const res = await fetch(`https://careerplatform-xu14.onrender.com/institute/${instituteId}/faculties/${facultyId}`, {
         method: "DELETE",
       });
       const data = await res.json();
@@ -68,7 +68,7 @@ const Faculties = () => {
   const saveEdit = async () => {
     if (!editingName) return alert("Faculty name cannot be empty");
     try {
-      const res = await fetch(`https://careerplatform-o67g.onrender.com/institute/${instituteId}/faculties/${editingId}`, {
+      const res = await fetch(`https://careerplatform-xu14.onrender.com/institute/${instituteId}/faculties/${editingId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: editingName }),

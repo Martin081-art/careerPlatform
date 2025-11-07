@@ -17,7 +17,7 @@ const ViewJobs = ({ user }) => {
       // clear previous error
       setError(null);
       try {
-        const res = await fetch("https://careerplatform-o67g.onrender.com/students/opportunities"); // backend endpoint
+        const res = await fetch("https://careerplatform-xu14.onrender.com/students/opportunities"); // backend endpoint
 
         // Validate HTTP status first
         if (!res.ok) {
@@ -66,7 +66,7 @@ const ViewJobs = ({ user }) => {
     }
 
     try {
-      const res = await fetch("https://careerplatform-o67g.onrender.com/students/apply-job", {
+      const res = await fetch("https://careerplatform-xu14.onrender.com/students/apply-job", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ studentId, jobId }),

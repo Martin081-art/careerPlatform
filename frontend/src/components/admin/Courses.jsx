@@ -10,7 +10,7 @@ export default function Courses() {
   // Fetch all courses
   const fetchCourses = async () => {
     try {
-      const res = await fetch("https://careerplatform-o67g.onrender.com/admin/courses");
+      const res = await fetch("https://careerplatform-xu14.onrender.com/admin/courses");
       const data = await res.json();
       if (data.success) setCourses(data.courses);
     } catch (err) {
@@ -21,7 +21,7 @@ export default function Courses() {
   // Fetch all faculties for dropdown
   const fetchFaculties = async () => {
     try {
-      const res = await fetch("https://careerplatform-o67g.onrender.com/admin/faculties");
+      const res = await fetch("https://careerplatform-xu14.onrender.com/admin/faculties");
       const data = await res.json();
       if (data.success) setFaculties(data.faculties);
     } catch (err) {
@@ -36,7 +36,7 @@ export default function Courses() {
       return;
     }
     try {
-      const res = await fetch("https://careerplatform-o67g.onrender.com/admin/courses", {
+      const res = await fetch("https://careerplatform-xu14.onrender.com/admin/courses", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, facultyId }),
@@ -57,7 +57,7 @@ export default function Courses() {
   // Delete course
   const deleteCourse = async (id) => {
     try {
-      const res = await fetch(`https://careerplatform-o67g.onrender.com/admin/courses/${id}`, {
+      const res = await fetch(`https://careerplatform-xu14.onrender.com/admin/courses/${id}`, {
         method: "DELETE",
       });
       const data = await res.json();

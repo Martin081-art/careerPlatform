@@ -1,5 +1,6 @@
 import admin from "firebase-admin";
 import dotenv from "dotenv";
+
 dotenv.config();
 
 const serviceAccount = {
@@ -8,8 +9,13 @@ const serviceAccount = {
   privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
 };
 
+// Initialize Firebase Admin SDK
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
+
+// Named exports so other files can import them
+export const dbAdmin = admin.firestore();
+export const adminAuth = admin.auth();
 
 export default admin;

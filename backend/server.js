@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import admin from "./config/firebaseConfig.js"; // your updated firebase-admin export
+import admin from "./config/firebaseConfig.js"; // your Firebase admin setup
 
 // Routes
 import studentRoutes from "./routes/studentRoutes.js";
@@ -15,11 +15,11 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // ------------------- Middleware -------------------
-// Parse JSON & URL-encoded
+// Parse JSON & URL-encoded bodies
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// CORS
+// ------------------- CORS -------------------
 const allowedOrigins = [
   "http://localhost:3000",
   "https://learning-platform-c696a.web.app"
@@ -33,9 +33,14 @@ app.use(cors({
     }
     return callback(null, true);
   },
-  methods: ["GET","POST","PUT","DELETE"],
+  methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
+
+// ------------------- Test CORS -------------------
+app.get("/cors-test", (req, res) => {
+  res.json({ message: "✅ CORS is working!" });
+});
 
 // ------------------- Routes -------------------
 app.use("/students", studentRoutes);
@@ -52,6 +57,7 @@ app.get("/test-firebase", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
 
 // ------------------- Root -------------------
 app.get("/", (req, res) => {

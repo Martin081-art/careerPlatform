@@ -20,7 +20,7 @@ const ApplyCourse = ({ user }) => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const res = await fetch("https://careerplatform-xu14.onrender.com/students/courses");
+        const res = await fetch("https://careerplatform-z4jj.onrender.com/students/courses");
         const data = await res.json();
         if (data.success) {
           setCourses(data.courses);
@@ -67,7 +67,7 @@ const ApplyCourse = ({ user }) => {
     console.log("🪪 Firebase UID (studentId):", activeUser.uid);
     console.log("📦 Payload being sent to backend:", payload);
 
-    const res = await fetch("https://careerplatform-xu14.onrender.com/students/apply", {
+    const res = await fetch("https://careerplatform-z4jj.onrender.com/students/apply", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

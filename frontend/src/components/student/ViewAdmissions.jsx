@@ -16,7 +16,7 @@ const ViewAdmissions = ({ user }) => {
       console.log("Fetching admissions for user:", user);
 
       try {
-        const res = await fetch(`https://careerplatform-xu14.onrender.com/students/admissions/${user.uid}`);
+        const res = await fetch(`https://careerplatform-z4jj.onrender.com/students/admissions/${user.uid}`);
         const data = await res.json();
 
         console.log("Admissions API response:", data);

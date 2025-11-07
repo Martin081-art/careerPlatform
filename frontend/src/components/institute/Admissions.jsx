@@ -11,7 +11,7 @@ const Admissions = ({ user }) => {
       setLoading(true);
       try {
         // Fetch all courses for this institute
-        const resCourses = await fetch(`https://careerplatform-xu14.onrender.com/institute/${user.institutionId}/courses`);
+        const resCourses = await fetch(`https://careerplatform-z4jj.onrender.com/institute/${user.institutionId}/courses`);
         const dataCourses = await resCourses.json();
         if (!resCourses.ok || !dataCourses.success) {
           console.warn("⚠️ Failed to fetch courses:", dataCourses.message);
@@ -22,7 +22,7 @@ const Admissions = ({ user }) => {
         // For each course, fetch its applications
         const coursesWithApplications = await Promise.all(
           dataCourses.courses.map(async (course) => {
-            const resApps = await fetch(`https://careerplatform-xu14.onrender.com/institute/${user.institutionId}/applications`);
+            const resApps = await fetch(`https://careerplatform-z4jj.onrender.com/institute/${user.institutionId}/applications`);
             const dataApps = await resApps.json();
             const applications = dataApps.success
               ? dataApps.applications.filter(app => app.courseId === course.id)
@@ -46,7 +46,7 @@ const Admissions = ({ user }) => {
   const publishApplication = async (applicationId) => {
     try {
       const res = await fetch(
-        `https://careerplatform-xu14.onrender.com/institute/${user.institutionId}/admissions/application/${applicationId}`,
+        `https://careerplatform-z4jj.onrender.com/institute/${user.institutionId}/admissions/application/${applicationId}`,
         { method: "PATCH" }
       );
       const data = await res.json();

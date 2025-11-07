@@ -12,7 +12,7 @@ const InstituteLogin = ({ setUser }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("https://careerplatform-xu14.onrender.com/institute/login", {
+      const res = await fetch("https://careerplatform-z4jj.onrender.com/institute/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

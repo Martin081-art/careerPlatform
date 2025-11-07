@@ -32,7 +32,7 @@ const UploadDocuments = ({ user }) => {
       const documentList = files.map((file) => file.name);
       console.log("Uploading documents:", documentList);
 
-      const res = await fetch(`https://careerplatform-xu14.onrender.com/students/${user.uid}/documents`, {
+      const res = await fetch(`https://careerplatform-z4jj.onrender.com/students/${user.uid}/documents`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ documents: documentList }),

@@ -27,7 +27,7 @@ const LoginStudent = ({ setUser }) => {
       const token = await user.getIdToken();
 
       // Verify token with backend
-      const res = await fetch("https://careerplatform-xu14.onrender.com/students/verify", {
+      const res = await fetch("https://careerplatform-z4jj.onrender.com/students/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token }),

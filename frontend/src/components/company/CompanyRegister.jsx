@@ -14,7 +14,7 @@ const CompanyRegister = ({ setUser }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("https://careerplatform-xu14.onrender.com/companies/register", {
+      const res = await fetch("https://careerplatform-z4jj.onrender.com/companies/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

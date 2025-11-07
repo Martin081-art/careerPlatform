@@ -27,7 +27,7 @@ const Applications = ({ user }) => {
         console.log(`🔹 Fetching applications for instituteId: ${user.institutionId}`);
 
         const res = await fetch(
-          `https://careerplatform-xu14.onrender.com/institute/${user.institutionId}/applications`
+          `https://careerplatform-z4jj.onrender.com/institute/${user.institutionId}/applications`
         );
 
         console.log("🔹 Raw response object:", res);
@@ -60,7 +60,7 @@ const Applications = ({ user }) => {
     try {
       console.log(`⚡ Updating status for application ${appId} -> ${newStatus}`);
       const res = await fetch(
-        `https://careerplatform-xu14.onrender.com/institute/${user.institutionId}/admissions/${appId}`,
+        `https://careerplatform-z4jj.onrender.com/institute/${user.institutionId}/admissions/${appId}`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },

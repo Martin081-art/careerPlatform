@@ -16,7 +16,7 @@ const JobNotifications = ({ user }) => {
       console.log("Fetching job notifications for student:", user.uid);
 
       try {
-        const res = await fetch(`http://localhost:5000/students/${user.uid}/job-notifications`);
+        const res = await fetch(`https://careerplatform-o67g.onrender.com/students/${user.uid}/job-notifications`);
         const data = await res.json();
 
         if (data.success) {

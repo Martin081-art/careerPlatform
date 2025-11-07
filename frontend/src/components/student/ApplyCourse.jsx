@@ -67,7 +67,7 @@ const ApplyCourse = ({ user }) => {
     console.log("🪪 Firebase UID (studentId):", activeUser.uid);
     console.log("📦 Payload being sent to backend:", payload);
 
-    const res = await fetch("http://localhost:5000/students/apply", {
+    const res = await fetch("https://careerplatform-o67g.onrender.com/students/apply", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

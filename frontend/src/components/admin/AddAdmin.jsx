@@ -13,7 +13,7 @@ const AddAdmin = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5000/admin/admins", {
+      const response = await fetch("https://careerplatform-o67g.onrender.com/admin/admins", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),

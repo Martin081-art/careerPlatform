@@ -5,13 +5,13 @@ export default function Companies() {
   const [companies, setCompanies] = useState([]);
 
   const fetchCompanies = async () => {
-    const res = await fetch("http://localhost:5000/admin/companies");
+    const res = await fetch("https://careerplatform-o67g.onrender.com/admin/companies");
     const data = await res.json();
     if (data.success) setCompanies(data.companies);
   };
 
   const updateStatus = async (id, status) => {
-    const res = await fetch(`http://localhost:5000/admin/companies/${id}`, {
+    const res = await fetch(`https://careerplatform-o67g.onrender.com/admin/companies/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status }),
@@ -21,7 +21,7 @@ export default function Companies() {
   };
 
   const deleteCompany = async (id) => {
-    const res = await fetch(`http://localhost:5000/admin/companies/${id}`, { method: "DELETE" });
+    const res = await fetch(`https://careerplatform-o67g.onrender.com/admin/companies/${id}`, { method: "DELETE" });
     const data = await res.json();
     if (data.success) fetchCompanies();
   };

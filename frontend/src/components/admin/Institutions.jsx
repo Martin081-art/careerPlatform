@@ -9,7 +9,7 @@ export default function Institutions() {
 
   const fetchInstitutions = async () => {
     try {
-      const res = await fetch("http://localhost:5000/admin/institutions");
+      const res = await fetch("https://careerplatform-o67g.onrender.com/admin/institutions");
       const data = await res.json();
       if (data.success) setInstitutions(data.institutions);
     } catch (err) {
@@ -19,7 +19,7 @@ export default function Institutions() {
 
   const addInstitution = async () => {
     try {
-      const res = await fetch("http://localhost:5000/admin/institutes", {
+      const res = await fetch("https://careerplatform-o67g.onrender.com/admin/institutes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, address }),
@@ -40,7 +40,7 @@ export default function Institutions() {
 
   const deleteInstitution = async (id) => {
     try {
-      const res = await fetch(`http://localhost:5000/admin/institutes/${id}`, {
+      const res = await fetch(`https://careerplatform-o67g.onrender.com/admin/institutes/${id}`, {
         method: "DELETE",
       });
       const data = await res.json();

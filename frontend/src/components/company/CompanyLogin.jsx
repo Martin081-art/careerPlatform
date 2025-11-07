@@ -15,7 +15,7 @@ const CompanyLogin = ({ setUser }) => {
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:5000/companies/login", {
+      const res = await fetch("https://careerplatform-o67g.onrender.com/companies/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

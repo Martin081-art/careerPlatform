@@ -10,7 +10,7 @@ export default function Faculties() {
   // Fetch all faculties
   const fetchFaculties = async () => {
     try {
-      const res = await fetch("http://localhost:5000/admin/faculties");
+      const res = await fetch("https://careerplatform-o67g.onrender.com/admin/faculties");
       const data = await res.json();
       if (data.success) setFaculties(data.faculties);
     } catch (err) {
@@ -21,7 +21,7 @@ export default function Faculties() {
   // Fetch all institutions for dropdown
   const fetchInstitutions = async () => {
     try {
-      const res = await fetch("http://localhost:5000/admin/institutions");
+      const res = await fetch("https://careerplatform-o67g.onrender.com/admin/institutions");
       const data = await res.json();
       if (data.success) setInstitutions(data.institutions);
     } catch (err) {
@@ -36,7 +36,7 @@ export default function Faculties() {
       return;
     }
     try {
-      const res = await fetch("http://localhost:5000/admin/faculties", {
+      const res = await fetch("https://careerplatform-o67g.onrender.com/admin/faculties", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, institutionId }),
@@ -57,7 +57,7 @@ export default function Faculties() {
   // Delete faculty
   const deleteFaculty = async (id) => {
     try {
-      const res = await fetch(`http://localhost:5000/admin/faculties/${id}`, {
+      const res = await fetch(`https://careerplatform-o67g.onrender.com/admin/faculties/${id}`, {
         method: "DELETE",
       });
       const data = await res.json();

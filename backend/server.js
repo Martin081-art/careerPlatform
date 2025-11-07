@@ -61,7 +61,7 @@ app.get("/test-firebase", async (req, res) => {
 
 // ------------------- Root -------------------
 app.get("/", (req, res) => {
-  res.send("✅ Server is alive and running!");
+  res.send("✅ Server is  running!");
 });
 
 // ------------------- Start server -------------------

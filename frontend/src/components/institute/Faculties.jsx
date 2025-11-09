@@ -8,58 +8,79 @@ const Faculties = () => {
   const [editingName, setEditingName] = useState("");
 
   // 🔹 Get the logged-in institute info
-  const institute = JSON.parse(localStorage.getItem("user"));
-  const instituteId = institute?.uid || institute?.id; // adjust based on your stored user object
+  const user = JSON.parse(localStorage.getItem("user"));
+  console.log("📌 Logged-in user:", user);
+
+  const institutionId = user?.institutionId;
+  console.log("🔹 Using institutionId:", institutionId);
 
   // Fetch faculties from backend
   const fetchFaculties = async () => {
+    if (!institutionId) {
+      console.warn("⚠️ No institutionId available. Cannot fetch faculties.");
+      return;
+    }
+
     try {
-      const res = await fetch(`https://careerplatform-z4jj.onrender.com/institute/${instituteId}/faculties`);
+      console.log("🔹 Fetching faculties for institutionId:", institutionId);
+      const res = await fetch(
+        `https://careerplatform-z4jj.onrender.com/institute/${institutionId}/faculties`
+      );
       const data = await res.json();
+      console.log("🧾 Fetch faculties response:", data);
       if (data.success) setFaculties(data.faculties);
     } catch (err) {
-      console.error("Fetch faculties error:", err);
+      console.error("❌ Fetch faculties error:", err);
     }
   };
 
   useEffect(() => {
-    if (instituteId) fetchFaculties();
-  }, [instituteId]);
+    fetchFaculties();
+  }, [institutionId]);
 
   // Add new faculty
   const addFaculty = async () => {
     if (!newFaculty) return alert("Enter faculty name");
     try {
-      const res = await fetch(`https://careerplatform-z4jj.onrender.com/institute/${instituteId}/faculties`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: newFaculty }),
-      });
+      console.log("🔹 Adding new faculty:", newFaculty);
+      const res = await fetch(
+        `https://careerplatform-z4jj.onrender.com/institute/${institutionId}/faculties`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: newFaculty }),
+        }
+      );
       const data = await res.json();
+      console.log("🧾 Add faculty response:", data);
       if (data.success) {
-        fetchFaculties();
         setNewFaculty("");
+        fetchFaculties();
       }
     } catch (err) {
-      console.error("Add faculty error:", err);
+      console.error("❌ Add faculty error:", err);
     }
   };
 
   // Delete faculty
   const deleteFaculty = async (facultyId) => {
     try {
-      const res = await fetch(`https://careerplatform-z4jj.onrender.com/institute/${instituteId}/faculties/${facultyId}`, {
-        method: "DELETE",
-      });
+      console.log("🔹 Deleting facultyId:", facultyId);
+      const res = await fetch(
+        `https://careerplatform-z4jj.onrender.com/institute/${institutionId}/faculties/${facultyId}`,
+        { method: "DELETE" }
+      );
       const data = await res.json();
+      console.log("🧾 Delete faculty response:", data);
       if (data.success) fetchFaculties();
     } catch (err) {
-      console.error("Delete faculty error:", err);
+      console.error("❌ Delete faculty error:", err);
     }
   };
 
   // Start editing
   const startEditing = (faculty) => {
+    console.log("🔹 Editing faculty:", faculty);
     setEditingId(faculty.id);
     setEditingName(faculty.name);
   };
@@ -68,21 +89,30 @@ const Faculties = () => {
   const saveEdit = async () => {
     if (!editingName) return alert("Faculty name cannot be empty");
     try {
-      const res = await fetch(`https://careerplatform-z4jj.onrender.com/institute/${instituteId}/faculties/${editingId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: editingName }),
-      });
+      console.log("🔹 Saving edit for facultyId:", editingId, "new name:", editingName);
+      const res = await fetch(
+        `https://careerplatform-z4jj.onrender.com/institute/${institutionId}/faculties/${editingId}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: editingName }),
+        }
+      );
       const data = await res.json();
+      console.log("🧾 Save edit response:", data);
       if (data.success) {
         setEditingId(null);
         setEditingName("");
         fetchFaculties();
       }
     } catch (err) {
-      console.error("Update faculty error:", err);
+      console.error("❌ Update faculty error:", err);
     }
   };
+
+  if (!user) {
+    return <p>⚠️ No user logged in. Please login to see faculties.</p>;
+  }
 
   return (
     <div className="dashboard-main">

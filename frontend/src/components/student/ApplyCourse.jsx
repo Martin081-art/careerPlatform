@@ -5,10 +5,10 @@ import "../../components/styles/PanelStyles.css";
 
 const ApplyCourse = ({ user }) => {
   const [courses, setCourses] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [loadingCourseId, setLoadingCourseId] = useState(null); // track loading per course
 
-  // ✅ Watch Firebase Auth state
+  // Watch Firebase Auth state
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       setCurrentUser(firebaseUser);
@@ -16,7 +16,7 @@ const ApplyCourse = ({ user }) => {
     return () => unsubscribe();
   }, []);
 
-  // ✅ Fetch courses from backend
+  // Fetch courses from backend
   useEffect(() => {
     const fetchCourses = async () => {
       try {
@@ -37,62 +37,54 @@ const ApplyCourse = ({ user }) => {
   }, []);
 
   const handleApply = async (courseId, institutionId) => {
-  if (!user && !currentUser) {
-    alert("You must be logged in to apply for a course");
-    return;
-  }
-
-  setLoading(true);
-
-  try {
-    const activeUser = currentUser || auth.currentUser;
-    if (!activeUser) {
-      alert("Login session expired. Please log in again.");
+    if (!user && !currentUser) {
+      alert("You must be logged in to apply for a course");
       return;
     }
 
-    const token = await activeUser.getIdToken(true);
+    setLoadingCourseId(courseId); // mark this course as loading
 
-    // ✅ Ensure we include studentId and institutionId in the payload
-    const payload = {
-      studentId: activeUser.uid,
-      courseId,
-      institutionId, // from the course object
-    };
+    try {
+      const activeUser = currentUser || auth.currentUser;
+      if (!activeUser) {
+        alert("Login session expired. Please log in again.");
+        return;
+      }
 
-    console.log("🎯 Apply button clicked");
-    console.log("📘 Course ID:", courseId);
-    console.log("🏛️ Institution ID:", institutionId);
-    console.log("👤 Current user state:", { user, currentUser });
-    console.log("🪪 Firebase UID (studentId):", activeUser.uid);
-    console.log("📦 Payload being sent to backend:", payload);
+      const token = await activeUser.getIdToken(true);
 
-    const res = await fetch("https://careerplatform-z4jj.onrender.com/students/apply", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(payload),
-    });
+      const payload = {
+        studentId: activeUser.uid,
+        courseId,
+        institutionId,
+      };
 
-    const data = await res.json();
+      console.log("📦 Payload:", payload);
 
-    console.log("🧾 Raw backend response:", data);
+      const res = await fetch("https://careerplatform-z4jj.onrender.com/students/apply", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
 
-    if (data.success) {
-      alert("Course application submitted successfully!");
-    } else {
-      alert(data.message || "Failed to apply for course");
+      const data = await res.json();
+      console.log("🧾 Backend response:", data);
+
+      if (data.success) {
+        alert("Course application submitted successfully!");
+      } else {
+        alert(data.message || "Failed to apply for course");
+      }
+    } catch (error) {
+      console.error("Apply course error:", error);
+      alert("Error applying for course");
+    } finally {
+      setLoadingCourseId(null); // reset loading state
     }
-  } catch (error) {
-    console.error("Apply course error:", error);
-    alert("Error applying for course");
-  } finally {
-    setLoading(false);
-  }
-};
-
+  };
 
   return (
     <div className="student-panel-container">
@@ -105,9 +97,9 @@ const ApplyCourse = ({ user }) => {
             <p>Institution ID: {course.institutionId}</p>
             <button
               onClick={() => handleApply(course.id, course.institutionId)}
-              disabled={loading}
+              disabled={loadingCourseId === course.id}
             >
-              {loading ? "Applying..." : "Apply"}
+              {loadingCourseId === course.id ? "Applying..." : "Apply"}
             </button>
           </div>
         ))}

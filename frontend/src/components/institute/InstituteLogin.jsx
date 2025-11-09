@@ -11,21 +11,47 @@ const InstituteLogin = ({ setUser }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("📌 Submitting login form:", formData);
+
     try {
-      const res = await fetch("https://careerplatform-z4jj.onrender.com/institute/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      const res = await fetch(
+        "https://careerplatform-z4jj.onrender.com/institute/login",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        }
+      );
+
+      console.log("🔹 Raw response:", res);
+
       const data = await res.json();
+      console.log("🧾 Response JSON:", data);
+
       if (data.success) {
-        setUser({ role: "institute", name: data.institute.name, institutionId: data.institute.id });
+        // Construct user object
+        const userObj = {
+          role: "institute",
+          name: data.institute.name,
+          institutionId: data.institute.id,
+        };
+
+        // Store in localStorage
+        localStorage.setItem("user", JSON.stringify(userObj));
+        console.log("✅ User stored in localStorage:", userObj);
+
+        // Update state
+        setUser(userObj);
+        console.log("✅ User state updated:", userObj);
+
+        // Navigate to dashboard
         navigate("/dashboard/institute");
       } else {
+        console.warn("⚠️ Login failed:", data.message);
         alert(data.message);
       }
     } catch (error) {
-      console.error("Login error:", error);
+      console.error("❌ Login error:", error);
     }
   };
 

@@ -20,7 +20,7 @@ export default function Reports() {
 
   return (
     <div style={styles.container}>
-      <h2 style={styles.title}>📊 System Reports</h2>
+      <h2 style={styles.title}>System Reports</h2>
       <div style={styles.grid}>
         <div style={styles.card}>
           <h3>Total Students</h3>

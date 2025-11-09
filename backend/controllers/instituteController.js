@@ -82,15 +82,26 @@ export const updateInstituteProfile = async (req, res) => {
 // ------------------- Faculties -------------------
 export const getFaculties = async (req, res) => {
   try {
-    const { instituteId } = req.params;
-    const snapshot = await dbAdmin.collection("faculties").where("instituteId", "==", instituteId).get();
+    // Get institutionId from URL parameters
+    const { institutionId } = req.params;
+
+    // Query Firestore for faculties with matching institutionId
+    const snapshot = await dbAdmin
+      .collection("faculties")
+      .where("institutionId", "==", institutionId)
+      .get();
+
+    // Map the documents to plain objects including their Firestore ID
     const faculties = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    res.json({ success:true, faculties });
+
+    // Send the response back
+    res.json({ success: true, faculties });
   } catch (error) {
     console.error("Get faculties error:", error);
-    res.status(500).json({ success:false, message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
+
 
 export const addFaculty = async (req, res) => {
   try {

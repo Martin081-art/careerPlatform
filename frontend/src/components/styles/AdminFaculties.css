@@ -61,31 +61,39 @@
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--space-4);
+  gap: var(--space-5);
+  margin-bottom: var(--space-4);
 }
 
+/* Input fields */
 .input {
   font: inherit;
   background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-3); /* spacing between inputs */
 }
 
-/* Actions */
+/* Actions container */
 .actions {
-  margin-top: var(--space-4);
+  margin-top: var(--space-5);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3); /* space between multiple buttons */
 }
 
 /* Buttons */
 .btn {
   font: inherit;
-  padding: var(--space-2) var(--space-4);
+  padding: var(--space-3) var(--space-5);
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);
   background: var(--surface);
   cursor: pointer;
   box-shadow: var(--shadow-sm);
+  margin-right: var(--space-3);
+  margin-bottom: var(--space-3);
 }
 
 .btn.primary {
@@ -93,6 +101,7 @@
   color: #fff;
   border-color: var(--primary);
 }
+
 .btn.primary:hover {
   background: var(--primary-600);
 }
@@ -102,6 +111,7 @@
   color: #fff;
   border-color: var(--danger);
 }
+
 .btn.danger:hover {
   background: var(--danger-600);
 }
@@ -173,7 +183,61 @@
   opacity: 0.85;
   text-decoration: none;
 }
+
 .footer-right a:hover {
   opacity: 1;
   text-decoration: underline;
+}
+
+/* Courses list styling */
+.courses-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+
+.course-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  gap: var(--space-3);
+}
+
+.course-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.course-name {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.course-meta {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* Apply button styling inside cards */
+.card button {
+  padding: var(--space-3) var(--space-5);
+  margin-top: var(--space-2);
+  border-radius: var(--radius-sm);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
 }

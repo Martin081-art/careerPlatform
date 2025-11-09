@@ -147,16 +147,42 @@ export const getCourses = async (req, res) => {
   }
 };
 
+
+
 export const addCourse = async (req, res) => {
   try {
-    const { name, facultyId } = req.body;
-    const docRef = await dbAdmin.collection("courses").add({ name, facultyId });
+    console.log("=== Incoming addCourse request ===");
+    console.log("Headers:", req.headers);
+    console.log("Raw body:", req.body);
+
+    const { name, facultyId, institutionId } = req.body;
+
+    if (!name || !facultyId || !institutionId) {
+      console.warn("Missing required fields:", { name, facultyId, institutionId });
+      return res.status(400).json({
+        success: false,
+        message: "Missing required fields (name, facultyId, institutionId)",
+      });
+    }
+
+    console.log("Validated data to save:", { name, facultyId, institutionId });
+
+    // Save to Firestore
+    const docRef = await dbAdmin.collection("courses").add({
+      name,
+      facultyId,
+      institutionId,
+    });
+
+    console.log("Course saved in Firestore:", { id: docRef.id, name, facultyId, institutionId });
+
     res.json({ success: true, id: docRef.id });
   } catch (error) {
     console.error("Add course error:", error);
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
 
 export const deleteCourse = async (req, res) => {
   try {

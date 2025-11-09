@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "../../components/styles/AdminFaculties.css"; // add modern styles
+import "../../components/styles/AdminFaculties.css";
 
 export default function Faculties() {
   const [faculties, setFaculties] = useState([]);
@@ -88,7 +88,6 @@ export default function Faculties() {
             placeholder="Faculty Name"
           />
 
-          {/* Dropdown for institution selection */}
           <select
             className="input"
             value={institutionId}
@@ -96,7 +95,7 @@ export default function Faculties() {
           >
             <option value="">Select Institution</option>
             {institutions.map((inst) => (
-              <option key={inst.institution_id} value={inst.institution_id}>
+              <option key={inst.id} value={inst.id}>
                 {inst.name}
               </option>
             ))}
@@ -110,15 +109,20 @@ export default function Faculties() {
 
       <section className="surface">
         <ul className="faculties-list">
-          {faculties.map((fac) => (
-            <li key={fac.id} className="faculty-item">
-              <div className="faculty-info">
-                <strong className="faculty-name">{fac.name}</strong>
-                <span className="faculty-meta">Institution: {fac.institutionId}</span>
-              </div>
-              <button className="btn danger" onClick={() => deleteFaculty(fac.id)}>Delete</button>
-            </li>
-          ))}
+          {faculties.map((fac) => {
+            const institution = institutions.find(i => i.id === fac.institutionId);
+            return (
+              <li key={fac.id} className="faculty-item">
+                <div className="faculty-info">
+                  <strong className="faculty-name">{fac.name}</strong>
+                  <span className="faculty-meta">
+                    Institution: {institution ? institution.name : "Unknown"}
+                  </span>
+                </div>
+                <button className="btn danger" onClick={() => deleteFaculty(fac.id)}>Delete</button>
+              </li>
+            );
+          })}
         </ul>
       </section>
 

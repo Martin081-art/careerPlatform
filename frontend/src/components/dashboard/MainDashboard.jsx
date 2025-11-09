@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../../components/styles/Dashboard.css";
-import bgImage from "../../assets/admin2.jpeg"; // import the image
 import { FaUniversity, FaBook, FaClipboardList, FaBuilding, FaUser, FaFileUpload, FaBriefcase, FaSignOutAlt } from "react-icons/fa";
 
 const MainDashboard = ({ user }) => {
@@ -18,58 +17,98 @@ const MainDashboard = ({ user }) => {
   const { role, name } = user;
 
   return (
-    <div className="dashboard-container" style={{ backgroundImage: `url(${bgImage})`, backgroundSize: "cover", backgroundPosition: "center" }}>
+    // Removed inline background style; Dashboard.css will apply the photo and overlay
+    <div className="dashboard-container">
       <aside className="sidebar">
         <h2 className="sidebar-title">{role.toUpperCase()} PANEL</h2>
         <ul className="sidebar-nav">
           {role === "admin" && (
             <>
               <li className="nav-item">
-                <Link className="nav-link" to="/admin/institutions"><FaUniversity className="icon"/> Manage Institutions</Link>
+                {/* REMOVED ICON */}
+                <Link className="nav-link" to="/admin/institutions">Manage Institutions</Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/admin/faculties"><FaBook className="icon"/> Manage Faculties</Link>
+                {/* REMOVED ICON */}
+                <Link className="nav-link" to="/admin/faculties">Manage Faculties</Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/admin/courses"><FaClipboardList className="icon"/> Manage Courses</Link>
+                {/* REMOVED ICON */}
+                <Link className="nav-link" to="/admin/courses">Manage Courses</Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/admin/reports"><FaFileUpload className="icon"/> View Reports</Link>
+                {/* REMOVED ICON */}
+                <Link className="nav-link" to="/admin/reports">View Reports</Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/admin/companies"><FaBuilding className="icon"/> Manage Companies</Link>
+                {/* REMOVED ICON */}
+                <Link className="nav-link" to="/admin/companies">Manage Companies</Link>
               </li>
             </>
           )}
 
           {role === "institute" && (
             <>
-              <li className="nav-item"><Link className="nav-link" to="/institute/faculties"><FaBook className="icon"/> Add Faculty</Link></li>
-              <li className="nav-item"><Link className="nav-link" to="/institute/courses"><FaClipboardList className="icon"/> Add Courses</Link></li>
-              <li className="nav-item"><Link className="nav-link" to="/institute/applications"><FaFileUpload className="icon"/> Student Applications</Link></li>
-              <li className="nav-item"><Link className="nav-link" to="/institute/admissions"><FaUniversity className="icon"/> Publish Admissions</Link></li>
+              <li className="nav-item">
+                {/* REMOVED ICON */}
+                <Link className="nav-link" to="/institute/faculties">Add Faculty</Link>
+              </li>
+              <li className="nav-item">
+                {/* REMOVED ICON */}
+                <Link className="nav-link" to="/institute/courses">Add Courses</Link>
+              </li>
+              <li className="nav-item">
+                {/* REMOVED ICON */}
+                <Link className="nav-link" to="/institute/applications">Student Applications</Link>
+              </li>
+              <li className="nav-item">
+                {/* REMOVED ICON */}
+                <Link className="nav-link" to="/institute/admissions">Publish Admissions</Link>
+              </li>
             </>
           )}
 
           {role === "student" && (
             <>
-              <li className="nav-item"><Link className="nav-link" to="/student/apply-course"><FaClipboardList className="icon"/> Apply for Course</Link></li>
-              <li className="nav-item"><Link className="nav-link" to="/student/upload-document"><FaFileUpload className="icon"/> Upload Documents</Link></li>
-              <li className="nav-item"><Link className="nav-link" to="/student/profile"><FaUser className="icon"/> Profile</Link></li>
-              <li className="nav-item"><Link className="nav-link" to="/student/admissions"><FaUniversity className="icon"/> Admissions Results</Link></li>
-              <li className="nav-item"><Link className="nav-link" to="/student/jobs"><FaBriefcase className="icon"/> Job Notifications</Link></li>
+              <li className="nav-item">
+                {/* REMOVED ICON */}
+                <Link className="nav-link" to="/student/apply-course">Apply for Course</Link>
+              </li>
+              <li className="nav-item">
+                {/* REMOVED ICON */}
+                <Link className="nav-link" to="/student/upload-document">Upload Documents</Link>
+              </li>
+              <li className="nav-item">
+                {/* REMOVED ICON */}
+                <Link className="nav-link" to="/student/profile">Profile</Link>
+              </li>
+              <li className="nav-item">
+                {/* REMOVED ICON */}
+                <Link className="nav-link" to="/student/admissions">Admissions Results</Link>
+              </li>
+              <li className="nav-item">
+                {/* REMOVED ICON */}
+                <Link className="nav-link" to="/student/jobs">Job Notifications</Link>
+              </li>
             </>
           )}
 
           {role === "company" && (
             <>
-              <li className="nav-item"><Link className="nav-link" to="/company/post-job"><FaBriefcase className="icon"/> Post Opportunities</Link></li>
-              <li className="nav-item"><Link className="nav-link" to="/company/applications"><FaFileUpload className="icon"/> View Applications</Link></li>
+              <li className="nav-item">
+                {/* REMOVED ICON */}
+                <Link className="nav-link" to="/company/post-job">Post Opportunities</Link>
+              </li>
+              <li className="nav-item">
+                {/* REMOVED ICON */}
+                <Link className="nav-link" to="/company/applications">View Applications</Link>
+              </li>
             </>
           )}
 
           <li className="nav-item">
-            <button className="logout-btn" onClick={() => navigate("/")}><FaSignOutAlt className="icon"/> Logout</button>
+            {/* REMOVED ICON */}
+            <button className="logout-btn" onClick={() => navigate("/")}>Logout</button>
           </li>
         </ul>
       </aside>

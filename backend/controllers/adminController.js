@@ -1,5 +1,42 @@
 import { dbAdmin, adminAuth } from "../config/firebaseConfig.js";
 
+
+
+// -------------------- Admin Login --------------------
+export const adminLogin = async (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+      return res.status(400).json({ success: false, message: "All fields are required" });
+    }
+
+    // Find admin in Firestore
+    const snapshot = await dbAdmin
+      .collection("admins")
+      .where("username", "==", username)
+      .get();
+
+    if (snapshot.empty) {
+      return res.status(401).json({ success: false, message: "Invalid username or password" });
+    }
+
+    const adminDoc = snapshot.docs[0];
+    const adminData = adminDoc.data();
+
+    // Plain-text password comparison
+    if (adminData.password !== password) {
+      return res.status(401).json({ success: false, message: "Invalid username or password" });
+    }
+
+    res.json({ success: true, message: "Login successful", adminId: adminDoc.id });
+  } catch (error) {
+    console.error("Admin login error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+
 // -------------------- Institutions --------------------
 export const getInstitutions = async (req, res) => {
   try {
@@ -197,28 +234,36 @@ export const deleteCompany = async (req, res) => {
   }
 };
 
-// -------------------- Admins --------------------
+// -------------------- Add Admin --------------------
 export const addAdmin = async (req, res) => {
   try {
     const { username, password } = req.body;
+
     if (!username || !password) {
       return res.status(400).json({ success: false, message: "All fields are required" });
     }
+
+    // Create Firebase user
     const userRecord = await adminAuth.createUser({
       email: username,
       password,
       displayName: username,
     });
+
+    // Store username and password in Firestore
     await dbAdmin.collection("admins").doc(userRecord.uid).set({
       username,
+      password, // plain text for now (not secure for production)
       createdAt: new Date().toISOString(),
     });
+
     res.json({ success: true, message: "Admin added successfully", adminId: userRecord.uid });
   } catch (error) {
     console.error("Add admin error:", error);
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
 
 // -------------------- Reports --------------------
 export const getReports = async (req, res) => {

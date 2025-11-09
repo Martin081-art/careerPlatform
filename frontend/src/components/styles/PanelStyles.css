@@ -1,206 +1,542 @@
-/* ==============================
-   General Panel Container
-   Applies to all roles
-   ============================== */
-.dashboard-container,
+/* --- Professional panel styles scoped away from dashboard --- */
+
+/* Containers (exclude .dashboard-container to avoid overriding its bg) */
 .student-panel-container,
 .institute-panel-container,
 .company-panel-container {
-  display: flex;
+  display: grid;
+  grid-template-columns: 280px 1fr;
   min-height: 100vh;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f4f7f9;
-  color: #333;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #1f2937;
+  /* UPDATED: water/blue-water page background */
+  background:
+    radial-gradient(1000px 500px at 20% 20%, rgba(56, 189, 248, 0.18), transparent 45%), /* cyan pools */
+    radial-gradient(800px 400px at 80% 80%, rgba(59, 130, 246, 0.16), transparent 50%),  /* blue pools */
+    linear-gradient(135deg, #e0f2fe 0%, #bfdbfe 50%, #93c5fd 100%);                      /* soft blue wash */
+  background-repeat: no-repeat;
 }
 
-/* ==============================
-   Sidebar
-   ============================== */
-.sidebar {
-  width: 250px;
-  background: linear-gradient(180deg, #1abc9c, #16a085);
+/* Sidebar (scoped) */
+.student-panel-container .sidebar,
+.institute-panel-container .sidebar,
+.company-panel-container .sidebar {
+  background: rgba(15, 23, 42, 0.95);
   color: #fff;
-  padding: 20px;
+  padding: 2rem 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 1rem;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
 }
 
-.sidebar h2 {
-  font-size: 1.6rem;
-  margin-bottom: 20px;
+.student-panel-container .sidebar::before,
+.institute-panel-container .sidebar::before,
+.company-panel-container .sidebar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+}
+
+.student-panel-container .sidebar h2,
+.institute-panel-container .sidebar h2,
+.company-panel-container .sidebar h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 1.5rem;
   text-align: center;
-  letter-spacing: 1px;
+  color: #f1f5f9;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
 }
 
-.sidebar ul {
+.student-panel-container .sidebar h2::after,
+.institute-panel-container .sidebar h2::after,
+.company-panel-container .sidebar h2::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 25%;
+  width: 50%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 1px;
+}
+
+/* Nav */
+.student-panel-container .sidebar ul,
+.institute-panel-container .sidebar ul,
+.company-panel-container .sidebar ul {
   list-style: none;
+  margin: 0;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.sidebar ul li {
-  margin-bottom: 15px;
-}
-
-.sidebar ul li a,
-.sidebar ul li button {
-  color: #fff;
+.student-panel-container .sidebar a,
+.student-panel-container .sidebar button,
+.institute-panel-container .sidebar a,
+.institute-panel-container .sidebar button,
+.company-panel-container .sidebar a,
+.company-panel-container .sidebar button {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  border-radius: 10px;
+  color: #cbd5e1;
   text-decoration: none;
-  padding: 10px 15px;
-  display: block;
-  border-radius: 8px;
-  transition: background 0.3s ease;
-  font-weight: 500;
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
   cursor: pointer;
-  border: none;
-  width: 100%;
-  text-align: left;
+  font-weight: 500;
+  font-size: 0.95rem;
+  position: relative;
+  overflow: hidden;
 }
 
-.sidebar ul li a:hover,
-.sidebar ul li button:hover {
-  background-color: rgba(255, 255, 255, 0.2);
+.student-panel-container .sidebar a::before,
+.student-panel-container .sidebar button::before,
+.institute-panel-container .sidebar a::before,
+.institute-panel-container .sidebar button::before,
+.company-panel-container .sidebar a::before,
+.company-panel-container .sidebar button::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 3px;
+  background: rgba(255, 255, 255, 0.3);
+  transform: scaleY(0);
+  transition: transform 0.3s ease;
 }
 
-/* ==============================
-   Main Dashboard / Panel Content
-   ============================== */
-.dashboard-main,
-.panel-main {
-  flex: 1;
-  padding: 30px;
-  background-color: #ecf0f1;
-  overflow-y: auto;
+.student-panel-container .sidebar a:hover,
+.student-panel-container .sidebar button:hover,
+.institute-panel-container .sidebar a:hover,
+.institute-panel-container .sidebar button:hover,
+.company-panel-container .sidebar a:hover,
+.company-panel-container .sidebar button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateX(8px);
 }
 
-.dashboard-main h1,
+.student-panel-container .sidebar a:hover::before,
+.student-panel-container .sidebar button:hover::before,
+.institute-panel-container .sidebar a:hover::before,
+.institute-panel-container .sidebar button:hover::before,
+.company-panel-container .sidebar a:hover::before,
+.company-panel-container .sidebar button:hover::before {
+  transform: scaleY(1);
+}
+
+.student-panel-container .sidebar a.active,
+.student-panel-container .sidebar button.active,
+.institute-panel-container .sidebar a.active,
+.institute-panel-container .sidebar button.active,
+.company-panel-container .sidebar a.active,
+.company-panel-container .sidebar button.active {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Main content (scoped) */
+.student-panel-container .panel-main,
+.institute-panel-container .panel-main,
+.company-panel-container .panel-main {
+  padding: 2rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  background: transparent; /* keep page bg visible */
+  overflow-x: auto;
+}
+
+/* Headings */
 .panel-main h1 {
+  margin: 0;
   font-size: 2rem;
-  margin-bottom: 15px;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1.3;
+  position: relative;
+  padding-bottom: 0.75rem;
+  /* NEW: ensure the heading appears above the cards within .panel-main */
+  order: -1;
+  margin-bottom: 0.75rem;
+}
+.panel-main h1::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 2px;
 }
 
-.dashboard-main p,
-.panel-main p {
-  font-size: 1rem;
-  margin-bottom: 10px;
-}
-
-/* ==============================
-   Card Grid Layout
-   ============================== */
+/* Card grid */
 .card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
-  margin-top: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  /* NEW: prevent equal-height stretching */
+  align-items: start;
+  /* NEW: slight spacing below the heading */
+  margin-top: 0.25rem;
 }
 
 .card {
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  /* NEW: keep height based on content and wrap long text */
+  height: auto;
+  overflow-wrap: anywhere;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
 }
 
 .card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  border-color: #cbd5e1;
 }
 
 .card h3 {
-  margin-bottom: 10px;
-  font-size: 1.2rem;
-  color: #16a085;
+  margin: 0 0 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1e293b;
+  line-height: 1.4;
 }
 
 .card p {
+  margin: 0 0 1rem;
+  color: #64748b;
   font-size: 0.95rem;
-  margin-bottom: 8px;
-  color: #555;
+  line-height: 1.5;
 }
 
 .card button {
-  background-color: #1abc9c;
+  appearance: none;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.9);
   color: #fff;
-  padding: 8px 14px;
-  border: none;
+  padding: 0.75rem 1.25rem;
   border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
   cursor: pointer;
-  font-weight: 500;
-  transition: background 0.3s ease;
+  transition: all 0.3s ease;
+  width: 100%;
 }
 
 .card button:hover {
-  background-color: #16a085;
+  background: rgba(0, 0, 0, 1);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* ==============================
-   Form Inputs (for uploads or filters)
-   ============================== */
-input[type="text"],
-input[type="file"],
-select,
-textarea {
+/* Forms */
+.panel-main input[type="text"],
+.panel-main input[type="file"],
+.panel-main select,
+.panel-main textarea {
   width: 100%;
-  padding: 10px 12px;
-  margin: 8px 0 16px 0;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-sizing: border-box;
-  transition: border 0.3s ease;
+  padding: 0.875rem 1rem;
+  margin: 0.5rem 0 1rem 0;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #ffffff;
+  font-family: inherit;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
 }
 
-input:focus,
-select:focus,
-textarea:focus {
+.panel-main input:focus,
+.panel-main select:focus,
+.panel-main textarea:focus {
   outline: none;
-  border-color: #1abc9c;
+  border-color: rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+  background: #ffffff;
 }
 
-/* ==============================
-   Buttons
-   ============================== */
-button {
-  background-color: #1abc9c;
-  color: #fff;
-  padding: 10px 16px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
+.panel-main textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+/* Enhanced form labels */
+.panel-main label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #374151;
   font-weight: 500;
-  transition: background 0.3s ease;
+  font-size: 0.95rem;
 }
 
-button:hover {
-  background-color: #16a085;
+/* Stats and metrics */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
-/* ==============================
-   Responsive Design
-   ============================== */
-@media (max-width: 768px) {
-  .dashboard-container,
+.stat-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* Table styles */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.data-table th {
+  background: #f8fafc;
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #475569;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 0.875rem;
+}
+
+.data-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #f1f5f9;
+  color: #475569;
+}
+
+.data-table tr:last-child td {
+  border-bottom: none;
+}
+
+.data-table tr:hover {
+  background: #f8fafc;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
   .student-panel-container,
   .institute-panel-container,
   .company-panel-container {
-    flex-direction: column;
+    grid-template-columns: 240px 1fr;
   }
+  
+  .student-panel-container .panel-main,
+  .institute-panel-container .panel-main,
+  .company-panel-container .panel-main {
+    padding: 1.5rem;
+  }
+}
 
-  .sidebar {
-    width: 100%;
+@media (max-width: 768px) {
+  .student-panel-container,
+  .institute-panel-container,
+  .company-panel-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .student-panel-container .sidebar,
+  .institute-panel-container .sidebar,
+  .company-panel-container .sidebar {
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: space-around;
-    padding: 15px;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
   }
-
-  .sidebar h2 {
+  
+  .student-panel-container .sidebar h2,
+  .institute-panel-container .sidebar h2,
+  .company-panel-container .sidebar h2 {
     flex-basis: 100%;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+  }
+  
+  .student-panel-container .sidebar ul,
+  .institute-panel-container .sidebar ul,
+  .company-panel-container .sidebar ul {
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+  
+  .student-panel-container .sidebar a,
+  .student-panel-container .sidebar button,
+  .institute-panel-container .sidebar a,
+  .institute-panel-container .sidebar button,
+  .company-panel-container .sidebar a,
+  .company-panel-container .sidebar button {
+    flex: 1;
+    min-width: 120px;
+    justify-content: center;
     text-align: center;
+    padding: 0.75rem;
   }
-
+  
+  .student-panel-container .sidebar a:hover,
+  .student-panel-container .sidebar button:hover,
+  .institute-panel-container .sidebar a:hover,
+  .institute-panel-container .sidebar button:hover,
+  .company-panel-container .sidebar a:hover,
+  .company-panel-container .sidebar button:hover {
+    transform: translateY(-2px);
+  }
+  
+  .student-panel-container .panel-main,
+  .institute-panel-container .panel-main,
+  .company-panel-container .panel-main {
+    padding: 1rem;
+  }
+  
+  .panel-main h1 {
+    font-size: 1.5rem;
+  }
+  
   .card-grid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .student-panel-container .sidebar a,
+  .student-panel-container .sidebar button,
+  .institute-panel-container .sidebar a,
+  .institute-panel-container .sidebar button,
+  .company-panel-container .sidebar a,
+  .company-panel-container .sidebar button {
+    min-width: calc(50% - 0.5rem);
+    font-size: 0.875rem;
+  }
+  
+  .card {
+    padding: 1.25rem;
+    border-radius: 12px;
+  }
+}
+
+/* Utility classes */
+.text-muted {
+  color: #64748b;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+.mt-4 {
+  margin-top: 1rem;
+}
+
+.flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+/* NEW: Compact job card variant — apply className="job-card" to job cards */
+.card.job-card,
+.job-card {
+  max-width: 520px;      /* wrap around content with a sensible max */
+  width: fit-content;    /* size to content (within max) */
+  padding: 1.25rem;      /* slightly tighter spacing */
+  align-self: start;     /* avoid stretching in the grid */
+}
+
+/* NEW: trim long descriptions inside job cards */
+.job-card p {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;     /* show up to 3 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+}
+
+/* NEW: job card actions shouldn’t force height */
+.job-card button {
+  width: auto;               /* don’t span full width to reduce vertical size */
+  display: inline-flex;
 }

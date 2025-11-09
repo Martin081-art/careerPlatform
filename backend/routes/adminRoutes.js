@@ -20,7 +20,8 @@ import {
   publishAdmission,
   addCompany,
   admitStudent,
-  addAdmin, // <-- import the new admin controller
+  addAdmin,      // <-- add admin
+  adminLogin,    // <-- admin login
 } from "../controllers/adminController.js";
 
 const router = express.Router();
@@ -29,41 +30,36 @@ const router = express.Router();
 router.get("/institutions", getInstitutions);
 router.post("/institutes", addInstitution);
 router.delete("/institutes/:id", deleteInstitution);
+router.patch("/institutes/:id", updateInstitution);
 
 // -------------------- Faculties --------------------
 router.get("/faculties", getFaculties);
 router.post("/faculties", addFaculty);
 router.delete("/faculties/:id", deleteFaculty);
+router.patch("/faculties/:id", updateFaculty);
 
 // -------------------- Courses --------------------
 router.get("/courses", getCourses);
 router.post("/courses", addCourse);
 router.delete("/courses/:id", deleteCourse);
+router.patch("/courses/:id", updateCourse);
 
 // -------------------- Companies --------------------
 router.post("/companies", addCompany);
-
 router.get("/companies", getCompanies);
 router.patch("/companies/:id", updateCompanyStatus);
 router.delete("/companies/:id", deleteCompany);
 
 // -------------------- Admins --------------------
-router.post("/admins", addAdmin); // <-- new route to add admin
+router.post("/admins", addAdmin);         // add new admin
+router.post("/admins/login", adminLogin); // login admin
 
 // -------------------- Reports --------------------
 router.get("/reports", getReports);
 
-// -------------------- Update routes --------------------
-router.patch("/institutes/:id", updateInstitution);
-router.patch("/faculties/:id", updateFaculty);
-router.patch("/courses/:id", updateCourse);
-
-
-
 // -------------------- Admissions routes --------------------
 router.patch("/admissions/:courseId/publish", publishAdmission);
-router.get("/users", getRegisteredUsers);
 router.patch("/admissions/:applicationId/admit", admitStudent);
-
+router.get("/users", getRegisteredUsers);
 
 export default router;

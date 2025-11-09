@@ -41,33 +41,37 @@ import CompanyRegister from "./components/company/CompanyRegister";
 import PostJob from "./components/company/PostJob";
 import CompanyApplications from "./components/company/Applications";
 
+// +++ Add: Global layout
+import AppLayout from "./components/layout/AppLayout";
+
 function App() {
   const [user, setUser] = useState(null);
 
   return (
     <div className="App">
-      <Routes>
-        {/* ==================== LANDING ==================== */}
-        <Route path="/" element={<LandingPage />} />
+      {/* +++ Wrap all routes in the global layout */}
+      <AppLayout>
+        <Routes>
+          {/* ==================== LANDING ==================== */}
+          <Route path="/" element={<LandingPage />} />
 
-        {/* ==================== STUDENT ROUTES ==================== */}
-        <Route path="/student/register" element={<RegisterStudent />} />
-        <Route path="/student/login" element={<LoginStudent setUser={setUser} />} />
-        <Route path="/student/apply-course" element={<ApplyCourse user={user} />} />
-        <Route path="/student/upload-document" element={<UploadDocument user={user} />} />
-       
-        <Route path="/student/profile" element={<StudentProfile user={user} />} />
-        <Route path="/student/admissions" element={<ViewAdmissions user={user} />} />
-        <Route path="/student/admissions-results" element={<AdmissionsResults />} />
-        <Route path="/student/applications" element={<StudentApplications user={user} />} />
-        <Route path="/student/jobs" element={<ViewJobs />} />
-        <Route path="/student/notifications" element={<JobNotifications />} />
+          {/* ==================== STUDENT ROUTES ==================== */}
+          <Route path="/student/register" element={<RegisterStudent />} />
+          <Route path="/student/login" element={<LoginStudent setUser={setUser} />} />
+          <Route path="/student/apply-course" element={<ApplyCourse user={user} />} />
+          <Route path="/student/upload-document" element={<UploadDocument user={user} />} />
+          <Route path="/student/profile" element={<StudentProfile user={user} />} />
+          <Route path="/student/admissions" element={<ViewAdmissions user={user} />} />
+          <Route path="/student/admissions-results" element={<AdmissionsResults />} />
+          <Route path="/student/applications" element={<StudentApplications user={user} />} />
+          <Route path="/student/jobs" element={<ViewJobs />} />
+          <Route path="/student/notifications" element={<JobNotifications />} />
 
-        {/* ==================== INSTITUTE ROUTES ==================== */}
-        <Route path="/institute/login" element={<InstituteLogin setUser={setUser} />} />
-        <Route path="/institute/register" element={<RegisterInstitute setUser={setUser} />} />
-        <Route path="/institute/faculties" element={<Faculties />} />
-        <Route path="/institute/courses" element={<Courses />} />
+          {/* ==================== INSTITUTE ROUTES ==================== */}
+          <Route path="/institute/login" element={<InstituteLogin setUser={setUser} />} />
+          <Route path="/institute/register" element={<RegisterInstitute setUser={setUser} />} />
+          <Route path="/institute/faculties" element={<Faculties />} />
+          <Route path="/institute/courses" element={<Courses />} />
         <Route path="/institute/applications" element={<Applications user={user} />} />
         <Route path="/institute/admissions" element={<Admissions user={user} />} />
         <Route path="/institute/student-applications" element={<StudentApplicationsInstitute />} />
@@ -95,6 +99,7 @@ function App() {
         <Route path="/dashboard/admin" element={<MainDashboard user={{ role: "admin", name: "Admin" }} />} />
         <Route path="/dashboard/company" element={<MainDashboard user={{ role: "company", name: "Company" }} />} />
       </Routes>
+      </AppLayout>
     </div>
   );
 }

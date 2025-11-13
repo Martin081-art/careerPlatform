@@ -1,4 +1,5 @@
 import { dbAdmin, adminAuth } from "../config/firebaseConfig.js";
+import { sendEmail } from "../utils/sendEmail.js";
 
 // -------------------- Register Student --------------------
 export const registerStudent = async (req, res) => {
@@ -9,8 +10,10 @@ export const registerStudent = async (req, res) => {
       return res.status(400).json({ success: false, message: "All fields are required" });
     }
 
+    // 1️⃣ Generate Firebase email verification link
     const emailVerificationLink = await adminAuth.generateEmailVerificationLink(email);
 
+    // 2️⃣ Save student in Firestore
     await dbAdmin.collection("students").doc(uid).set({
       name,
       email,
@@ -25,12 +28,28 @@ export const registerStudent = async (req, res) => {
       status: "",
     });
 
+    // 3️⃣ Send email to the user
+    await sendEmail({
+      to: email,
+      subject: "Verify your Career Guidance Account",
+      html: `
+        <h2>Welcome, ${name}!</h2>
+        <p>Thank you for registering on the Career Guidance Platform.</p>
+        <p>Please click the link below to verify your email:</p>
+        <a href="${emailVerificationLink}" target="_blank">Verify Email</a>
+        <br/><br/>
+        <p>If the button doesn't work, copy and paste this link into your browser:</p>
+        <p>${emailVerificationLink}</p>
+      `,
+    });
+
+    // 4️⃣ Response to frontend
     res.json({
       success: true,
-      message: "Student registered successfully!",
+      message: "Student registered successfully! Verification email sent.",
       studentId: uid,
-      emailVerificationLink,
     });
+
   } catch (error) {
     console.error("Register student error:", error);
     res.status(500).json({ success: false, message: error.message });

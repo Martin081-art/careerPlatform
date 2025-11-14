@@ -76,17 +76,49 @@ export const verifyStudent = async (req, res) => {
   }
 };
 
-// -------------------- Apply for Course --------------------
+// Helper: convert grades to numbers for comparison
+const gradeValue = { "A": 5, "B": 4, "C": 3, "D": 2, "E": 1 };
+
 export const applyCourse = async (req, res) => {
   try {
     const { studentId, courseId } = req.body;
+
+    // Fetch course
     const courseDoc = await dbAdmin.collection("courses").doc(courseId).get();
     if (!courseDoc.exists) return res.status(404).json({ success: false, message: "Course not found" });
 
     const course = courseDoc.data();
     const institutionId = course.institutionId;
+    const requirements = course.requirements || {};
+
     if (!institutionId) return res.status(400).json({ success: false, message: "Institution ID missing in course" });
 
+    // Fetch student
+    const studentDoc = await dbAdmin.collection("students").doc(studentId).get();
+    if (!studentDoc.exists) return res.status(404).json({ success: false, message: "Student not found" });
+
+    const student = studentDoc.data();
+    const studentRecords = student.academicRecords || {};
+
+    // Check requirements
+    for (let subject in requirements) {
+      const requiredGrade = requirements[subject];
+      const studentGrade = studentRecords[subject];
+      if (!studentGrade) {
+        return res.status(400).json({ 
+          success: false, 
+          message: `Missing grade for ${subject}` 
+        });
+      }
+      if (gradeValue[studentGrade] < gradeValue[requiredGrade]) {
+        return res.status(400).json({ 
+          success: false, 
+          message: `Grade for ${subject} is too low. Minimum required: ${requiredGrade}` 
+        });
+      }
+    }
+
+    // Check duplicate applications
     const existingApps = await dbAdmin.collection("applications")
       .where("studentId", "==", studentId)
       .where("courseId", "==", courseId)
@@ -101,6 +133,7 @@ export const applyCourse = async (req, res) => {
 
     if (institutionApps.size >= 2) return res.status(400).json({ success: false, message: "Max 2 courses per institution" });
 
+    // Add application
     const docRef = await dbAdmin.collection("applications").add({
       studentId,
       courseId,
@@ -115,6 +148,7 @@ export const applyCourse = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
 
 // -------------------- View Admissions --------------------
 export const viewAdmissions = async (req, res) => {

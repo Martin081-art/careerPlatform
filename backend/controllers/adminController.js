@@ -149,14 +149,18 @@ export const getCourses = async (req, res) => {
 
 
 
+// Valid grades helper
+const validGrades = ["A", "B", "C", "D", "E"];
+
 export const addCourse = async (req, res) => {
   try {
     console.log("=== Incoming addCourse request ===");
     console.log("Headers:", req.headers);
     console.log("Raw body:", req.body);
 
-    const { name, facultyId, institutionId } = req.body;
+    const { name, facultyId, institutionId, requirements } = req.body;
 
+    // Validate required fields
     if (!name || !facultyId || !institutionId) {
       console.warn("Missing required fields:", { name, facultyId, institutionId });
       return res.status(400).json({
@@ -165,16 +169,32 @@ export const addCourse = async (req, res) => {
       });
     }
 
-    console.log("Validated data to save:", { name, facultyId, institutionId });
+    // Validate requirements if provided
+    if (requirements) {
+      for (let subject in requirements) {
+        const grade = requirements[subject];
+        if (!validGrades.includes(grade)) {
+          console.warn("Invalid grade in requirements:", { subject, grade });
+          return res.status(400).json({
+            success: false,
+            message: `Invalid grade for ${subject}. Must be one of ${validGrades.join(", ")}`,
+          });
+        }
+      }
+    }
 
-    // Save to Firestore
+    console.log("Validated data to save:", { name, facultyId, institutionId, requirements });
+
+    // Save to Firestore in "courses" collection
     const docRef = await dbAdmin.collection("courses").add({
       name,
       facultyId,
       institutionId,
+      requirements: requirements || {},
+      createdAt: new Date().toISOString(),
     });
 
-    console.log("Course saved in Firestore:", { id: docRef.id, name, facultyId, institutionId });
+    console.log("Course saved in Firestore:", { id: docRef.id, name, facultyId, institutionId, requirements });
 
     res.json({ success: true, id: docRef.id });
   } catch (error) {
@@ -182,6 +202,7 @@ export const addCourse = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
 
 
 export const deleteCourse = async (req, res) => {

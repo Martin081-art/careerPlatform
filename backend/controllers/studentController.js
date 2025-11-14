@@ -1,6 +1,4 @@
 import { dbAdmin, adminAuth } from "../config/firebaseConfig.js";
-import { sendEmail } from "../utils/sendEmail.js";
-import { randomBytes } from "crypto";
 
 // -------------------- Register Student --------------------
 export const registerStudent = async (req, res) => {
@@ -11,13 +9,8 @@ export const registerStudent = async (req, res) => {
       return res.status(400).json({ success: false, message: "All fields are required" });
     }
 
-    // 1️⃣ Generate our own email verification token & link
-    const token = randomBytes(32).toString("hex");
-    const expiresAt = Date.now() + 24 * 60 * 60 * 1000; // 24h
-    const baseUrl = process.env.APP_BASE_URL || "https://careerplatform-z4jj.onrender.com";
-    const emailVerificationLink = `${baseUrl}/students/verify/${token}`;
+    const emailVerificationLink = await adminAuth.generateEmailVerificationLink(email);
 
-    // 2️⃣ Save student in Firestore with verification state
     await dbAdmin.collection("students").doc(uid).set({
       name,
       email,
@@ -30,34 +23,14 @@ export const registerStudent = async (req, res) => {
       admittedInstitution: "",
       selectedCourse: "",
       status: "",
-      emailVerified: false,
-      verificationToken: token,
-      verificationExpires: expiresAt,
     });
 
-    // 3️⃣ Send email to the user
-    await sendEmail({
-      to: email,
-      subject: "Verify your Career Guidance Account",
-      html: `
-        <h2>Welcome, ${name}!</h2>
-        <p>Thank you for registering on the Career Guidance Platform.</p>
-        <p>Please click the link below to verify your email:</p>
-        <a href="${emailVerificationLink}" target="_blank">Verify Email</a>
-        <br/><br/>
-        <p>If the button doesn't work, copy and paste this link into your browser:</p>
-        <p>${emailVerificationLink}</p>
-      `,
-    });
-
-    // 4️⃣ Response to frontend
     res.json({
       success: true,
-      message: "Student registered successfully! Verification email sent.",
+      message: "Student registered successfully!",
       studentId: uid,
-      verificationLink: emailVerificationLink,
+      emailVerificationLink,
     });
-
   } catch (error) {
     console.error("Register student error:", error);
     res.status(500).json({ success: false, message: error.message });
@@ -100,39 +73,6 @@ export const verifyStudent = async (req, res) => {
   } catch (error) {
     console.error("Verify student error:", error);
     res.status(401).json({ success: false, message: "Invalid or expired token" });
-  }
-};
-
-export const verifyStudentByToken = async (req, res) => {
-  try {
-    const { token } = req.params;
-    if (!token) return res.status(400).send("Invalid verification link.");
-
-    const snapshot = await dbAdmin
-      .collection("students")
-      .where("verificationToken", "==", token)
-      .limit(1)
-      .get();
-
-    if (snapshot.empty) return res.status(404).send("Verification link is invalid or already used.");
-
-    const doc = snapshot.docs[0];
-    const data = doc.data();
-    if (data.verificationExpires && Date.now() > data.verificationExpires) {
-      return res.status(410).send("Verification link has expired. Please request a new one.");
-    }
-
-    await dbAdmin.collection("students").doc(doc.id).update({
-      emailVerified: true,
-      verificationToken: null,
-      verificationExpires: null,
-      verifiedAt: new Date().toISOString(),
-    });
-
-    return res.status(200).send("✅ Email verified successfully. You can close this tab and login.");
-  } catch (error) {
-    console.error("Verify student by token error:", error);
-    return res.status(500).send("Internal server error.");
   }
 };
 

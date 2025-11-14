@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import "../../components/styles/AuthForms.css";
 
@@ -10,11 +10,9 @@ const RegisterStudent = () => {
     password: "",
     academicRecords: "",
   });
-  const [message, setMessage] = useState("");
   const [verificationLink, setVerificationLink] = useState("");
-  const [loading, setLoading] = useState(false); // Loading state
+  const [message, setMessage] = useState("");
   const auth = getAuth();
-  const navigate = useNavigate();
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -22,18 +20,18 @@ const RegisterStudent = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Reset message
-    setMessage("");
-
-    if (!formData.name || !formData.email || !formData.password || !formData.academicRecords) {
-      setMessage("⚠️ All fields are required");
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.password ||
+      !formData.academicRecords
+    ) {
+      alert("All fields are required");
       return;
     }
 
     try {
-      setLoading(true); // Start loading
-
-      // 1️⃣ Create Firebase Auth user
+      // Create Firebase Auth user
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         formData.email,
@@ -41,9 +39,7 @@ const RegisterStudent = () => {
       );
       const user = userCredential.user;
 
-      // 2️⃣ Backend will generate and send our own verification link
-
-      // 3️⃣ Register student in backend Firestore
+      // Register student in backend
       const res = await fetch(
         "https://careerplatform-z4jj.onrender.com/students/register",
         {
@@ -61,27 +57,14 @@ const RegisterStudent = () => {
       const data = await res.json();
 
       if (data.success) {
-        setMessage("✅ Student registered successfully! Please check your email to verify your account.");
-        if (data.verificationLink) setVerificationLink(data.verificationLink);
-        // Optional: redirect to login after 5 seconds
-        setTimeout(() => navigate("/student/login"), 5000);
+        setMessage("✅ Student registered successfully!");
+        setVerificationLink(data.emailVerificationLink);
       } else {
-        setMessage(`⚠️ ${data.message || "Registration failed."}`);
+        setMessage(data.message || "Registration failed.");
       }
     } catch (error) {
       console.error("Register error:", error);
-      // Better error feedback
-      if (error.code === "auth/email-already-in-use") {
-        setMessage("⚠️ This email is already registered.");
-      } else if (error.code === "auth/invalid-email") {
-        setMessage("⚠️ Invalid email address.");
-      } else if (error.code === "auth/weak-password") {
-        setMessage("⚠️ Password must be at least 6 characters.");
-      } else {
-        setMessage(error.message || "⚠️ Registration failed. Please try again.");
-      }
-    } finally {
-      setLoading(false); // Stop loading
+      setMessage("Registration failed. Please try again.");
     }
   };
 
@@ -94,44 +77,38 @@ const RegisterStudent = () => {
           type="text"
           name="name"
           placeholder="Full Name"
-          value={formData.name}
-          onChange={handleChange}
           required
+          onChange={handleChange}
         />
         <input
           type="email"
           name="email"
           placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
           required
+          onChange={handleChange}
         />
         <input
           type="password"
           name="password"
           placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
           required
+          onChange={handleChange}
         />
         <input
           type="text"
           name="academicRecords"
           placeholder="Academic Records"
-          value={formData.academicRecords}
-          onChange={handleChange}
           required
+          onChange={handleChange}
         />
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Registering..." : "Register"}
-        </button>
+        <button type="submit">Register</button>
 
         <p style={{ marginTop: "10px", textAlign: "center" }}>
           Already have an account? <Link to="/student/login">Login</Link>
         </p>
 
-        {message && <p style={{ marginTop: "10px", color: message.startsWith("✅") ? "green" : "red" }}>{message}</p>}
+        {message && <p style={{ marginTop: "10px" }}>{message}</p>}
 
         {verificationLink && (
           <div className="verify-section">

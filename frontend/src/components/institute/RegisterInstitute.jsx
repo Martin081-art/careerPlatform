@@ -12,6 +12,7 @@ function RegisterInstitute() {
   const [verificationLink, setVerificationLink] = useState(""); 
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [signupClicked, setSignupClicked] = useState(false);
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -19,6 +20,7 @@ function RegisterInstitute() {
   const handleRegister = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setSignupClicked(true);
 
     try {
       const res = await fetch(
@@ -125,11 +127,14 @@ function RegisterInstitute() {
         </div>
       )}
 
-      <p className="switch-text">
-        Already have an account? <Link to="/institute/login" className="link">Login here</Link>
-      </p>
-
-      <Link to="/" className="back-btn">Back to Home</Link>
+      {signupClicked && (
+        <>
+          <p className="switch-text">
+            Already have an account? <Link to="/institute/login" className="link">Login here</Link>
+          </p>
+          <Link to="/" className="back-btn">Back to Home</Link>
+        </>
+      )}
     </div>
   );
 }

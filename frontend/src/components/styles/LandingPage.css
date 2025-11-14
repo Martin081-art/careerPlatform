@@ -4,13 +4,10 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  
-  /* Dark transparent gradient */
-  background: 
-    radial-gradient(ellipse at 20% 20%, rgba(0, 0, 0, 0.3) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 80%, rgba(0, 0, 0, 0.2) 0%, transparent 50%),
-    linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
-  
+  background-image: url("../../assets/grads.jpeg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   color: white;
   font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
   text-align: center;

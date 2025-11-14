@@ -3,6 +3,7 @@ import {
   registerStudent,
   loginStudent,
   verifyStudent,
+  verifyStudentByToken,
   applyCourse,
   viewAdmissions,
   uploadDocuments,
@@ -10,8 +11,8 @@ import {
   applyJob,
   getJobNotifications,
   getCourses,
-  getStudentProfile,         // <-- new
-  updateStudentProfile 
+  getStudentProfile,
+  updateStudentProfile
 } from "../controllers/studentController.js";
 
 const router = express.Router();
@@ -20,6 +21,7 @@ const router = express.Router();
 router.post("/register", registerStudent);
 router.post("/login", loginStudent);          // now exists
 router.post("/verify", verifyStudent);
+router.get("/verify/:token", verifyStudentByToken);
 
 // Course applications
 router.post("/apply", applyCourse);

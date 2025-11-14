@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import "../../components/styles/AuthForms.css";
 
 const RegisterStudent = () => {
@@ -11,6 +11,7 @@ const RegisterStudent = () => {
     academicRecords: "",
   });
   const [message, setMessage] = useState("");
+  const [verificationLink, setVerificationLink] = useState("");
   const [loading, setLoading] = useState(false); // Loading state
   const auth = getAuth();
   const navigate = useNavigate();
@@ -40,8 +41,7 @@ const RegisterStudent = () => {
       );
       const user = userCredential.user;
 
-      // 2️⃣ Send email verification
-      await sendEmailVerification(user);
+      // 2️⃣ Backend will generate and send our own verification link
 
       // 3️⃣ Register student in backend Firestore
       const res = await fetch(
@@ -62,6 +62,7 @@ const RegisterStudent = () => {
 
       if (data.success) {
         setMessage("✅ Student registered successfully! Please check your email to verify your account.");
+        if (data.verificationLink) setVerificationLink(data.verificationLink);
         // Optional: redirect to login after 5 seconds
         setTimeout(() => navigate("/student/login"), 5000);
       } else {
@@ -131,6 +132,25 @@ const RegisterStudent = () => {
         </p>
 
         {message && <p style={{ marginTop: "10px", color: message.startsWith("✅") ? "green" : "red" }}>{message}</p>}
+
+        {verificationLink && (
+          <div className="verify-section">
+            <p>✅ Please verify your email before logging in.</p>
+            <p>Click below to verify your email:</p>
+            <a
+              href={verificationLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="verify-link"
+            >
+              Verify Email
+            </a>
+            <p style={{ fontSize: "13px", color: "#666" }}>
+              Or copy this link: <br />
+              <code>{verificationLink}</code>
+            </p>
+          </div>
+        )}
       </form>
     </div>
   );

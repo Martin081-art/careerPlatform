@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { db, auth } from "../../firebase/config";
+import { auth } from "../../firebase/config";
 import { onAuthStateChanged } from "firebase/auth";
 import "../../components/styles/PanelStyles.css";
 
 const gradeValue = { "A": 5, "B": 4, "C": 3, "D": 2, "E": 1 };
 
-const ApplyCourse = ({ user }) => {
+const ApplyCourse = () => {
   const [courses, setCourses] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
   const [loadingCourseId, setLoadingCourseId] = useState(null);
@@ -16,19 +16,24 @@ const ApplyCourse = ({ user }) => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       setCurrentUser(firebaseUser);
       if (firebaseUser) {
-        // Fetch student academic records from backend
         try {
           const token = await firebaseUser.getIdToken(true);
           const res = await fetch(
-            `https://careerplatform-z4jj.onrender.com/students/profile/${firebaseUser.uid}`,
+            `https://careerplatform-z4jj.onrender.com/students/${firebaseUser.uid}/profile`,
             { headers: { Authorization: `Bearer ${token}` } }
           );
           const data = await res.json();
           if (data.success) {
-            setStudentRecords(data.student.academicRecords);
+            console.log("✅ Fetched student academic records:", data.student.academicRecords);
+            // normalize all keys to lowercase
+            const normalizedRecords = {};
+            Object.entries(data.student.academicRecords).forEach(([key, val]) => {
+              normalizedRecords[key.toLowerCase()] = val;
+            });
+            setStudentRecords(normalizedRecords);
           }
         } catch (err) {
-          console.error("Failed to fetch student records:", err);
+          console.error("❌ Failed to fetch student records:", err);
         }
       }
     });
@@ -41,21 +46,35 @@ const ApplyCourse = ({ user }) => {
       try {
         const res = await fetch("https://careerplatform-z4jj.onrender.com/students/courses");
         const data = await res.json();
-        if (data.success) setCourses(data.courses);
+        if (data.success) {
+          console.log("📚 Fetched courses:", data.courses);
+          setCourses(data.courses);
+        }
       } catch (err) {
-        console.error("Failed to fetch courses:", err);
+        console.error("❌ Failed to fetch courses:", err);
       }
     };
     fetchCourses();
   }, []);
 
   // Check if student meets course requirements
-  const meetsRequirements = (requirements) => {
+  const meetsRequirements = (requirements, courseName) => {
     if (!requirements || !studentRecords) return false;
-    return Object.entries(requirements).every(([subject, minGrade]) => {
-      const studentGrade = studentRecords[subject];
-      return studentGrade && gradeValue[studentGrade] >= gradeValue[minGrade];
+
+    console.log(`\n🔍 Checking requirements for course: ${courseName}`);
+    let allMatched = true;
+
+    Object.entries(requirements).forEach(([subject, minGrade]) => {
+      const studentGrade = studentRecords[subject.toLowerCase()]; // normalize subject key
+      const matched = studentGrade && gradeValue[studentGrade] >= gradeValue[minGrade];
+      console.log(
+        `Subject: ${subject}, Required: ${minGrade}, Student: ${studentGrade || "N/A"}, Matched: ${matched}`
+      );
+      if (!matched) allMatched = false;
     });
+
+    console.log(allMatched ? "✅ All requirements matched!" : "❌ Some requirements not met.");
+    return allMatched;
   };
 
   const handleApply = async (courseId, institutionId) => {
@@ -85,7 +104,7 @@ const ApplyCourse = ({ user }) => {
       if (data.success) alert("Course application submitted successfully!");
       else alert(data.message || "Failed to apply for course");
     } catch (err) {
-      console.error("Apply course error:", err);
+      console.error("❌ Apply course error:", err);
       alert("Error applying for course");
     } finally {
       setLoadingCourseId(null);
@@ -99,7 +118,7 @@ const ApplyCourse = ({ user }) => {
 
       <div className="card-grid">
         {courses.map((course) => {
-          const eligible = meetsRequirements(course.requirements);
+          const eligible = meetsRequirements(course.requirements, course.name);
           return (
             <div key={course.id} className="card">
               <h3>{course.name}</h3>

@@ -85,37 +85,46 @@ export const applyCourse = async (req, res) => {
 
     // Fetch course
     const courseDoc = await dbAdmin.collection("courses").doc(courseId).get();
-    if (!courseDoc.exists) return res.status(404).json({ success: false, message: "Course not found" });
+    if (!courseDoc.exists)
+      return res.status(404).json({ success: false, message: "Course not found" });
 
     const course = courseDoc.data();
     const institutionId = course.institutionId;
     const requirements = course.requirements || {};
 
-    if (!institutionId) return res.status(400).json({ success: false, message: "Institution ID missing in course" });
+    if (!institutionId)
+      return res.status(400).json({ success: false, message: "Institution ID missing in course" });
 
     // Fetch student
     const studentDoc = await dbAdmin.collection("students").doc(studentId).get();
-    if (!studentDoc.exists) return res.status(404).json({ success: false, message: "Student not found" });
+    if (!studentDoc.exists)
+      return res.status(404).json({ success: false, message: "Student not found" });
 
     const student = studentDoc.data();
-    const studentRecords = student.academicRecords || {};
+    const studentRecords = {};
+    // normalize student academic record keys to lowercase
+    Object.entries(student.academicRecords || {}).forEach(([key, val]) => {
+      studentRecords[key.toLowerCase()] = val;
+    });
 
-    // Check requirements
+    console.log(`\n🔍 Checking requirements for student: ${studentId}, course: ${courseId}`);
+    let allMatched = true;
+
+    // Check each requirement
     for (let subject in requirements) {
       const requiredGrade = requirements[subject];
-      const studentGrade = studentRecords[subject];
-      if (!studentGrade) {
-        return res.status(400).json({ 
-          success: false, 
-          message: `Missing grade for ${subject}` 
-        });
-      }
-      if (gradeValue[studentGrade] < gradeValue[requiredGrade]) {
-        return res.status(400).json({ 
-          success: false, 
-          message: `Grade for ${subject} is too low. Minimum required: ${requiredGrade}` 
-        });
-      }
+      const studentGrade = studentRecords[subject.toLowerCase()]; // normalize key
+      const matched = studentGrade && gradeValue[studentGrade] >= gradeValue[requiredGrade];
+
+      console.log(
+        `Subject: ${subject}, Required: ${requiredGrade}, Student: ${studentGrade || "N/A"}, Matched: ${matched}`
+      );
+
+      if (!matched) allMatched = false;
+    }
+
+    if (!allMatched) {
+      return res.status(400).json({ success: false, message: "Some requirements not met" });
     }
 
     // Check duplicate applications
@@ -124,14 +133,17 @@ export const applyCourse = async (req, res) => {
       .where("courseId", "==", courseId)
       .get();
 
-    if (!existingApps.empty) return res.status(400).json({ success: false, message: "Already applied to this course" });
+    if (!existingApps.empty)
+      return res.status(400).json({ success: false, message: "Already applied to this course" });
 
+    // Max 2 courses per institution
     const institutionApps = await dbAdmin.collection("applications")
       .where("studentId", "==", studentId)
       .where("institutionId", "==", institutionId)
       .get();
 
-    if (institutionApps.size >= 2) return res.status(400).json({ success: false, message: "Max 2 courses per institution" });
+    if (institutionApps.size >= 2)
+      return res.status(400).json({ success: false, message: "Max 2 courses per institution" });
 
     // Add application
     const docRef = await dbAdmin.collection("applications").add({
@@ -142,12 +154,15 @@ export const applyCourse = async (req, res) => {
       createdAt: new Date().toISOString(),
     });
 
+    console.log("✅ Application added successfully:", docRef.id);
+
     res.json({ success: true, applicationId: docRef.id });
   } catch (error) {
-    console.error("Apply course error:", error);
+    console.error("❌ Apply course error:", error);
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
 
 
 // -------------------- View Admissions --------------------

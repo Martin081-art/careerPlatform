@@ -28,7 +28,7 @@
   font-family: "Poppins", sans-serif;
   color: var(--text);
   /* keep the CSS background in case inline style is removed */
-  background-image: linear-gradient(rgba(17,24,39,0.15), rgba(17,24,39,0.08)), url("../../assets/admin2.jpeg");
+  background-image: linear-gradient(rgba(17,24,39,0.15), rgba(17,24,39,0.08)), url("../../assets/dope.jpg");
   background-size: cover;
   background-position: center;
   background-attachment: fixed;

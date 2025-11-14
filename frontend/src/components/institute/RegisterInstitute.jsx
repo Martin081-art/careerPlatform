@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-
 function RegisterInstitute() {
   const [formData, setFormData] = useState({
     name: "",
@@ -9,7 +8,7 @@ function RegisterInstitute() {
     password: "",
     address: "",
   });
-  const [verificationLink, setVerificationLink] = useState(""); 
+  const [verificationLink, setVerificationLink] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [signupClicked, setSignupClicked] = useState(false);
@@ -21,6 +20,8 @@ function RegisterInstitute() {
     e.preventDefault();
     setLoading(true);
     setSignupClicked(true);
+    setMessage(""); // Clear previous messages
+    setVerificationLink("");
 
     try {
       const res = await fetch(
@@ -32,30 +33,47 @@ function RegisterInstitute() {
         }
       );
 
-      const data = await res.json();
+      console.log("Response status:", res.status);
 
-      if (data.success) {
+      let data = {};
+      try {
+        data = await res.json();
+        console.log("Response JSON:", data);
+      } catch (jsonError) {
+        console.error("Error parsing JSON response:", jsonError);
+        setMessage("⚠️ Server returned invalid JSON.");
+        return;
+      }
+
+      if (res.ok && data.success) {
         setVerificationLink(data.emailVerificationLink);
-        setMessage("✅ Institute registered successfully! Verify your email before login.");
+        setMessage(
+          "✅ Institute registered successfully! Verify your email before login."
+        );
       } else {
-        setMessage("❌ " + data.message);
+        setMessage(`❌ ${data.message || "Registration failed"}`);
+        console.error("Server error details:", data);
       }
     } catch (error) {
-      console.error("Registration error:", error);
-      setMessage("⚠️ Unable to register institute.");
+      console.error("Network or unexpected error:", error);
+      setMessage("⚠️ Unable to register institute. Check console for details.");
     } finally {
       setLoading(false);
     }
   };
 
   const copyLink = () => {
-    navigator.clipboard.writeText(verificationLink);
-    alert("Verification link copied to clipboard!");
+    if (verificationLink) {
+      navigator.clipboard.writeText(verificationLink);
+      alert("Verification link copied to clipboard!");
+    }
   };
 
   return (
-    <div className="landing-container">
-      <h1 className="landing-title">Register Institution</h1>
+    <div className="landing-container" style={{ maxWidth: "500px", margin: "0 auto" }}>
+      <h1 className="landing-title" style={{ textAlign: "center", marginBottom: "30px" }}>
+        Register Institution
+      </h1>
 
       <form className="form-container" onSubmit={handleRegister}>
         <input
@@ -100,26 +118,45 @@ function RegisterInstitute() {
         </button>
       </form>
 
-      {message && <p style={{ marginTop: "10px" }}>{message}</p>}
+      {message && (
+        <p style={{ marginTop: "15px", textAlign: "center", fontWeight: "500" }}>
+          {message}
+        </p>
+      )}
 
       {verificationLink && (
-        <div className="verify-section" style={{ marginTop: "20px" }}>
+        <div className="verify-section" style={{ marginTop: "20px", textAlign: "center" }}>
           <p>✅ Please verify your email before logging in.</p>
-          <p>Click below to verify your email:</p>
           <a
             href={verificationLink}
             target="_blank"
             rel="noopener noreferrer"
             className="verify-link"
+            style={{
+              display: "inline-block",
+              margin: "10px 0",
+              padding: "8px 16px",
+              backgroundColor: "#22c55e",
+              color: "#fff",
+              borderRadius: "6px",
+              textDecoration: "none",
+            }}
           >
             Verify Email
           </a>
-          <p style={{ fontSize: "13px", color: "#666" }}>
+          <p style={{ fontSize: "13px", color: "#666", marginTop: "10px" }}>
             Or copy this link:
             <br />
             <button
               onClick={copyLink}
               className="verify-link-button"
+              style={{
+                marginTop: "5px",
+                padding: "5px 10px",
+                fontSize: "12px",
+                borderRadius: "5px",
+                cursor: "pointer",
+              }}
             >
               {verificationLink}
             </button>
@@ -128,12 +165,29 @@ function RegisterInstitute() {
       )}
 
       {signupClicked && (
-        <>
+        <div style={{ marginTop: "25px", textAlign: "center" }}>
           <p className="switch-text">
-            Already have an account? <Link to="/institute/login" className="link">Login here</Link>
+            Already have an account?{" "}
+            <Link to="/institute/login" className="link">
+              Login here
+            </Link>
           </p>
-          <Link to="/" className="back-btn">Back to Home</Link>
-        </>
+          <Link
+            to="/"
+            className="back-btn"
+            style={{
+              display: "inline-block",
+              marginTop: "10px",
+              padding: "8px 16px",
+              backgroundColor: "#111213",
+              color: "#fff",
+              borderRadius: "6px",
+              textDecoration: "none",
+            }}
+          >
+            Back to Home
+          </Link>
+        </div>
       )}
     </div>
   );

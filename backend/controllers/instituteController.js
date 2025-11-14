@@ -4,21 +4,65 @@ import { adminAuth, dbAdmin } from "../config/firebaseConfig.js";
 export const registerInstitute = async (req, res) => {
   try {
     const { name, email, password, address } = req.body;
-    if (!name || !email || !password || !address) return res.status(400).json({ success:false, message:"All fields required" });
 
-    const userRecord = await adminAuth.createUser({ email, password, displayName: name });
-    const emailVerificationLink = await adminAuth.generateEmailVerificationLink(email);
+    // Validate all fields
+    if (!name || !email || !password || !address) {
+      console.warn("Register attempt with missing fields:", req.body);
+      return res.status(400).json({ 
+        success: false, 
+        message: "All fields are required." 
+      });
+    }
 
-    await dbAdmin.collection("institutes").doc(userRecord.uid).set({
-      name, email, address, status: "pending", createdAt: new Date().toISOString()
+    // Create user in Firebase Auth
+    let userRecord;
+    try {
+      userRecord = await adminAuth.createUser({ email, password, displayName: name });
+      console.log("Firebase user created:", userRecord.uid);
+    } catch (authError) {
+      console.error("Firebase Auth error:", authError);
+      return res.status(500).json({ success: false, message: authError.message });
+    }
+
+    // Generate email verification link
+    let emailVerificationLink;
+    try {
+      emailVerificationLink = await adminAuth.generateEmailVerificationLink(email);
+      console.log("Email verification link generated for:", email);
+    } catch (linkError) {
+      console.error("Error generating email verification link:", linkError);
+      return res.status(500).json({ success: false, message: "Failed to generate verification link." });
+    }
+
+    // Store institute data in Firestore
+    try {
+      await dbAdmin.collection("institutes").doc(userRecord.uid).set({
+        name,
+        email,
+        address,
+        status: "pending",
+        createdAt: new Date().toISOString()
+      });
+      console.log("Institute saved to Firestore:", userRecord.uid);
+    } catch (dbError) {
+      console.error("Firestore save error:", dbError);
+      return res.status(500).json({ success: false, message: "Failed to save institute data." });
+    }
+
+    // Success response
+    return res.json({
+      success: true,
+      message: "Institute registered successfully! Verify email before login.",
+      instituteId: userRecord.uid,
+      emailVerificationLink
     });
 
-    res.json({ success: true, message: "Institute registered. Verify email before login.", instituteId: userRecord.uid, emailVerificationLink });
   } catch (error) {
-    console.error("Register error:", error);
-    res.status(500).json({ success:false, message: error.message });
+    console.error("Unexpected register error:", error);
+    return res.status(500).json({ success: false, message: "Server error: " + error.message });
   }
 };
+
 
 // ------------------- Login Institute -------------------
 export const loginInstitute = async (req, res) => {
